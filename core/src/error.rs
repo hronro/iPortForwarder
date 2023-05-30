@@ -19,6 +19,10 @@ pub enum Error {
     /// The rule ID is invalid.
     InvalidRuleId = -13,
 
+    /// The local port start is invalid,
+    /// which will make the local port end greater than 65535.
+    InvalidLocalPortStart = -14,
+
     // OS errors, from -51 to -127.
     /// Permission denied.
     PermissionDenied = -51,

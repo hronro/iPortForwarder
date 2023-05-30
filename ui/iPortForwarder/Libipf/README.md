@@ -1,3 +1,3 @@
 # Libipf
 
-A description of this package.
+A Swift binding of `ipf`(core).

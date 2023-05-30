@@ -9,26 +9,50 @@ struct ContentView: View {
         VStack {
             ScrollView {
                 VStack {
-                    ForEach(Array(items.enumerated()), id: \.offset) { index, item in
-                        ForwardedItemRow(item: item, onChange: { ipAddress, port, allowLan in
-                            items[index] = ForwardedItem(source: ipAddress, port: port, allowLan: allowLan)
+                    ForEach(self.items.indices, id: \.self) { index in
+                        ForwardedItemRow(item: self.items[index], onChange: { ipAddress, rule, allowLan in
+                            items[index] = ForwardedItem(ip: ipAddress, rule: rule, allowLan: allowLan)
                         })
+                        .contextMenu {
+                            Button(action: {
+                                items.remove(at: index)
+                            }) {
+                                Text("Delete")
+                            }
+                        }
                     }
+                    .onDelete(perform: { indexSet in
+                        items.remove(atOffsets: indexSet)
+                    })
                     if isAddingNew {
                         ForwardedItemRow(onNewItemAdded: { newItem in
                             items.append(newItem)
                             isAddingNew = false
-                        }, onCancel: { isAddingNew = false })
+                        }, onCancel: { withAnimation {
+                            isAddingNew = false
+                        } })
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                    }
+                }
+
+                // A hack to make ScrollView stable
+                if items.isEmpty {
+                    HStack {
+                        Spacer()
                     }
                 }
             }
-            .frame(minWidth: 500, minHeight: 100)
+            .frame(minWidth: 600, minHeight: 100)
+            .padding()
 
             if !isAddingNew {
                 Button("Add New") {
-                    isAddingNew = true
+                    withAnimation {
+                        isAddingNew = true
+                    }
                 }
                 .padding()
+                .transition(.move(edge: .bottom))
             }
         }
     }
