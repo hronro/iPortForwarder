@@ -128,12 +128,14 @@ struct ForwardedItemRow: View {
                     }
                 }
                 .buttonStyle(.borderless)
+                .help(rule.isSingle() ? "Switch to forward a range of ports" : "Switch to forward a single por")
             }
 
             Spacer()
 
             Toggle("Allow LAN", isOn: $allowLan.animation())
                 .toggleStyle(.switch)
+                .help("Switch between binding to either 127.0.0.1 or 0.0.0.0")
                 .transition(.slide)
 
             if hasChanged() {
@@ -155,6 +157,7 @@ struct ForwardedItemRow: View {
                             .labelStyle(.iconOnly)
                             .foregroundColor(isValid() ? .green : .gray)
                     }
+                    .help("OK")
                     .disabled(!isValid())
 
                     Button {
@@ -166,6 +169,7 @@ struct ForwardedItemRow: View {
                             .labelStyle(.iconOnly)
                             .foregroundColor(.blue)
                     }
+                    .help("Reset")
 
                     if item == nil {
                         Button {
@@ -177,6 +181,7 @@ struct ForwardedItemRow: View {
                                 .labelStyle(.iconOnly)
                                 .foregroundColor(.red)
                         }
+                        .help("Cancel")
                     }
                 }
                 .transition(.move(edge: .trailing).combined(with: .opacity))
@@ -223,7 +228,7 @@ struct ForwardedItemRow_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             ForwardedItemRow(item: ForwardedItem(ip: "192.168.100.1", rule: .single(port: 1234)))
-            ForwardedItemRow(item: ForwardedItem(ip: "192.168.100.1", rule: .range(start: 1000, end: 2000)))
+            ForwardedItemRow(item: ForwardedItem(ip: "192.168.100.1", rule: .range(start: 23456, end: 23465)))
             ForwardedItemRow()
         }
     }
