@@ -9,21 +9,34 @@ struct ContentView: View {
         VStack {
             ScrollView {
                 VStack {
-                    ForEach(self.items.indices, id: \.self) { index in
-                        ForwardedItemRow(item: self.items[index], onChange: { ipAddress, rule, allowLan in
-                            items[index] = ForwardedItem(ip: ipAddress, rule: rule, allowLan: allowLan)
-                        })
+                    ForEach(items) { item in
+                        ForwardedItemRow(
+                            item: item,
+                            onChange: { ipAddress, remotePort, localPort, allowLan in
+                                let index = items.firstIndex(where: { $0 === item })
+                                withAnimation {
+                                    items[index!] = ForwardedItem(ip: ipAddress, remotePort: remotePort, localPort: localPort, allowLan: allowLan)
+                                }
+                            },
+                            onDelete: {
+                                let index = items.firstIndex(where: { $0 === item })
+                                _ = withAnimation {
+                                    items.remove(at: index!)
+                                }
+                            }
+                        )
                         .contextMenu {
                             Button(action: {
-                                items.remove(at: index)
+                                let index = items.firstIndex(where: { $0 === item })
+                                _ = withAnimation {
+                                    items.remove(at: index!)
+                                }
                             }) {
                                 Text("Delete")
                             }
                         }
                     }
-                    .onDelete(perform: { indexSet in
-                        items.remove(atOffsets: indexSet)
-                    })
+
                     if isAddingNew {
                         ForwardedItemRow(onNewItemAdded: { newItem in
                             items.append(newItem)
@@ -42,8 +55,8 @@ struct ContentView: View {
                     }
                 }
             }
-            .frame(minWidth: 600, minHeight: 100)
-            .padding()
+            .frame(minWidth: 400, minHeight: 100)
+            .padding(.all, 8)
 
             if !isAddingNew {
                 Button("Add New") {
