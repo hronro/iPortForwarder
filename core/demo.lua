@@ -50,6 +50,35 @@ local function cancel_forward(forward_rule_id)
 	return ipf.ipf_cancel_forward(forward_rule_id)
 end
 
+---Convert error code to error message
+---@param error number error code
+---@return string #error message
+local function error_message(error)
+	local message_table = {
+		[-1] = 'Unknown error',
+		[-10] = 'Invalid string',
+		[-11] = 'Invalid IP address',
+		[-12] = 'Too many rules',
+		[-13] = 'Invalid rule ID',
+		[-14] = 'Invalid local start port',
+		[-15] = 'Invalid remote end port',
+		[-16] = 'Error handler is already registered',
+		[-51] = 'Permission denied',
+		[-52] = 'Address in use',
+		[-53] = 'Already exists',
+		[-54] = 'Out of memory',
+	}
+
+	return message_table[error]
+end
+
+---Error handler for libipf
+---@param error number
+local function ipf_error_handler(error)
+	print('Error: ' .. error_message(error))
+	os.exit(1)
+end
+
 ---Sleep for n seconds
 ---@param n number
 local function sleep(n)
@@ -87,6 +116,8 @@ local function forward_a_range_of_ports(ip)
 	end
 	return forward_range(ip, start_port, end_port, start_port, true)
 end
+
+ipf.ipf_register_error_handler(ipf_error_handler)
 
 print 'Please input IP address you want to forward:'
 

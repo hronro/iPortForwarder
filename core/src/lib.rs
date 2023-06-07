@@ -2,9 +2,9 @@
 
 use std::collections::HashMap;
 use std::ffi::CStr;
-use std::net::{IpAddr, SocketAddr};
+use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 use std::os::raw::c_char;
-use std::sync::Mutex;
+use std::sync::{Mutex, OnceLock};
 
 use once_cell::sync::Lazy;
 use tokio::io::copy_bidirectional;
@@ -16,6 +16,7 @@ mod error;
 
 use error::Error;
 
+// TODO: use `std::sync::LazyLock` when it's stable.
 static RT: Lazy<Runtime> = Lazy::new(|| Runtime::new().unwrap());
 
 static AVAILABLE_RULE_IDS: Lazy<Mutex<Vec<i8>>> = Lazy::new(|| {
@@ -26,6 +27,8 @@ static AVAILABLE_RULE_IDS: Lazy<Mutex<Vec<i8>>> = Lazy::new(|| {
 
 static RUNNING_RULES: Lazy<Mutex<HashMap<i8, ForwardRuleHandler>>> =
     Lazy::new(|| Mutex::new(HashMap::with_capacity(128)));
+
+static ERROR_HANDLER: OnceLock<extern "C" fn(i8)> = OnceLock::new();
 
 /// Get a new rule ID.
 #[inline]
@@ -104,23 +107,28 @@ pub extern "C" fn ipf_forward(
         };
 
         let join_handler = RT.spawn(async move {
-            let listener = TcpListener::bind(SocketAddr::new(
+            match TcpListener::bind(SocketAddr::new(
                 if allow_lan { "0.0.0.0" } else { "127.0.0.1" }
                     .parse()
                     .unwrap(),
                 local_port,
             ))
             .await
-            .unwrap();
-
-            loop {
-                if let Ok((mut ingress, _)) = listener.accept().await {
-                    if let Ok(mut egress) =
-                        TcpStream::connect(SocketAddr::new(ip, remote_port)).await
-                    {
-                        RT.spawn(async move {
-                            _ = copy_bidirectional(&mut ingress, &mut egress).await;
-                        });
+            {
+                Ok(listener) => loop {
+                    if let Ok((mut ingress, _)) = listener.accept().await {
+                        if let Ok(mut egress) =
+                            TcpStream::connect(SocketAddr::new(ip, remote_port)).await
+                        {
+                            RT.spawn(async move {
+                                _ = copy_bidirectional(&mut ingress, &mut egress).await;
+                            });
+                        }
+                    }
+                },
+                Err(error) => {
+                    if let Some(error_handler) = ERROR_HANDLER.get() {
+                        error_handler(Error::from(error) as i8);
                     }
                 }
             }
@@ -147,6 +155,10 @@ pub extern "C" fn ipf_forward_range(
     local_port_start: u16,
     allow_lan: bool,
 ) -> i8 {
+    if remote_port_end < remote_port_start {
+        return Error::InvalidRemotePortEnd as i8;
+    }
+
     if u16::MAX - (remote_port_end - remote_port_start) < local_port_start {
         return Error::InvalidLocalPortStart as i8;
     }
@@ -168,23 +180,31 @@ pub extern "C" fn ipf_forward_range(
             .map(move |(index, remote_port)| {
                 let local_port = local_port_start + index as u16;
                 RT.spawn(async move {
-                    let listener = TcpListener::bind(SocketAddr::new(
-                        if allow_lan { "0.0.0.0" } else { "127.0.0.1" }
-                            .parse()
-                            .unwrap(),
+                    match TcpListener::bind(SocketAddr::new(
+                        IpAddr::V4(if allow_lan {
+                            Ipv4Addr::new(0, 0, 0, 0)
+                        } else {
+                            Ipv4Addr::new(127, 0, 0, 1)
+                        }),
                         local_port,
                     ))
                     .await
-                    .unwrap();
-
-                    loop {
-                        if let Ok((mut ingress, _)) = listener.accept().await {
-                            if let Ok(mut egress) =
-                                TcpStream::connect(SocketAddr::new(ip, remote_port)).await
-                            {
-                                RT.spawn(async move {
-                                    _ = copy_bidirectional(&mut ingress, &mut egress).await;
-                                });
+                    {
+                        Ok(listener) => loop {
+                            if let Ok((mut ingress, _)) = listener.accept().await {
+                                if let Ok(mut egress) =
+                                    TcpStream::connect(SocketAddr::new(ip, remote_port)).await
+                                {
+                                    RT.spawn(async move {
+                                        _ = copy_bidirectional(&mut ingress, &mut egress).await;
+                                    });
+                                }
+                            }
+                        },
+                        Err(error) => {
+                            _ = ipf_cancel_forward(rule_id);
+                            if let Some(error_handler) = ERROR_HANDLER.get() {
+                                error_handler(Error::from(error) as i8);
                             }
                         }
                     }
@@ -212,5 +232,15 @@ pub extern "C" fn ipf_cancel_forward(forward_rule_id: i8) -> i8 {
         forward_rule_id
     } else {
         Error::InvalidRuleId as i8
+    }
+}
+
+/// Cancel a forward rule.
+#[no_mangle]
+pub extern "C" fn ipf_register_error_handler(handler: extern "C" fn(i8)) -> i8 {
+    if ERROR_HANDLER.set(handler).is_ok() {
+        0
+    } else {
+        Error::ErrorHandlerAlreadyRegistered as i8
     }
 }

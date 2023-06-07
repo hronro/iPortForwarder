@@ -23,6 +23,12 @@ pub enum Error {
     /// which will make the local port end greater than 65535.
     InvalidLocalPortStart = -14,
 
+    /// The remote port end is invalid.
+    InvalidRemotePortEnd = -15,
+
+    /// The error handler has already been registered.
+    ErrorHandlerAlreadyRegistered = -16,
+
     // OS errors, from -51 to -127.
     /// Permission denied.
     PermissionDenied = -51,

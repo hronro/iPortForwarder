@@ -20,3 +20,6 @@ signed char ipf_forward_range(
 
 /** Cancel a forward rule. */
 signed char ipf_cancel_forward(signed char forward_rule_id);
+
+/** Register error handler. */
+signed char ipf_register_error_handler(signed char (*handler)(signed char));
