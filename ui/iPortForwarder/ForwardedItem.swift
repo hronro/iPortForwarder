@@ -44,7 +44,14 @@ enum Port: Equatable {
     }
 }
 
-class ForwardedItem: Identifiable {
+protocol DisplayableForwardedItem {
+    var ip: String { get }
+    var remotePort: Port { get }
+    var localPort: UInt16? { get }
+    var allowLan: Bool { get }
+}
+
+class ForwardedItem: DisplayableForwardedItem, Identifiable {
     let ip: String
     let remotePort: Port
     let localPort: UInt16?

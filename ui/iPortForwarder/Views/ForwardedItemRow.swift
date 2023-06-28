@@ -18,7 +18,7 @@ func showIpfError(_ error: Error) {
 }
 
 struct ForwardedItemRow: View {
-    var item: ForwardedItem?
+    var item: DisplayableForwardedItem?
 
     var onNewItemAdded: ((_ newItem: ForwardedItem) -> Void)?
     var onChange: ((_ ipAddress: String, _ remotePort: Port, _ localPort: UInt16?, _ allowLan: Bool) -> Void)?
@@ -65,7 +65,7 @@ struct ForwardedItemRow: View {
     }
 
     init(
-        item: ForwardedItem? = nil,
+        item: DisplayableForwardedItem? = nil,
         onNewItemAdded: ((_ newItem: ForwardedItem) -> Void)? = nil,
         onChange: ((_ ipAddress: String, _ remotePort: Port, _ localPort: UInt16?, _ allowLan: Bool) -> Void)? = nil,
         onCancel: (() -> Void)? = nil,
@@ -76,10 +76,10 @@ struct ForwardedItemRow: View {
         self.onChange = onChange
         self.onCancel = onCancel
         self.onDelete = onDelete
-        self.ipAddress = item?.ip ?? ""
-        self.remotePort = item?.remotePort ?? .single(port: 0)
-        self.localPort = item?.localPort
-        self.allowLan = item?.allowLan ?? false
+        self._ipAddress = State(initialValue: item?.ip ?? "")
+        self._remotePort = State(initialValue: item?.remotePort ?? .single(port: 0))
+        self._localPort = State(initialValue: item?.localPort)
+        self._allowLan = State(initialValue: item?.allowLan ?? false)
     }
 
     var body: some View {
@@ -395,12 +395,32 @@ struct ForwardedItemRow: View {
 }
 
 struct ForwardedItemRow_Previews: PreviewProvider {
+    private struct FakeForwardedItem: DisplayableForwardedItem {
+        let ip: String
+        let remotePort: Port
+        let localPort: UInt16?
+        let allowLan: Bool
+
+        init(
+            ip: String,
+            remotePort: Port,
+            localPort: UInt16? = nil,
+            allowLan: Bool = false
+        ) {
+            self.ip = ip
+            self.remotePort = remotePort
+            self.localPort = localPort
+            self.allowLan = allowLan
+        }
+    }
+
     static var previews: some View {
         Group {
-            ForwardedItemRow(item: try! ForwardedItem(ip: "192.168.100.1", remotePort: .single(port: 1234)))
-            ForwardedItemRow(item: try! ForwardedItem(ip: "192.168.100.1", remotePort: .single(port: 2080), localPort: 3080))
-            ForwardedItemRow(item: try! ForwardedItem(ip: "192.168.100.1", remotePort: .range(start: 23456, end: 23465)))
             ForwardedItemRow()
+            ForwardedItemRow(item: FakeForwardedItem(ip: "192.168.1.1", remotePort: .single(port: 1234)))
+            ForwardedItemRow(item: FakeForwardedItem(ip: "192.168.1.1", remotePort: .single(port: 1234), localPort: 4321))
+            ForwardedItemRow(item: FakeForwardedItem(ip: "192.168.1.1", remotePort: .range(start: 1000, end: 2000)))
+            ForwardedItemRow(item: FakeForwardedItem(ip: "192.168.1.1", remotePort: .range(start: 1000, end: 2000), localPort: 3000))
         }
     }
 }
