@@ -50,6 +50,7 @@ class ForwardedItem: Identifiable {
     let localPort: UInt16?
     let allowLan: Bool
     private let forwardRuleId: Int8
+    private var hasDeinit = false
 
     var id: Int8 {
         get {
@@ -62,7 +63,7 @@ class ForwardedItem: Identifiable {
         remotePort: UInt16,
         localPort: UInt16? = nil,
         allowLan: Bool = false
-    ) {
+    ) throws {
         self.ip = ip
         self.remotePort = .single(port: remotePort)
         if let localPort {
@@ -72,7 +73,7 @@ class ForwardedItem: Identifiable {
         }
         self.allowLan = allowLan
 
-        self.forwardRuleId = forward(
+        self.forwardRuleId = try forward(
             ip: ip,
             remotePort: remotePort,
             localPort: remotePort,
@@ -85,14 +86,14 @@ class ForwardedItem: Identifiable {
         remotePorts: (UInt16, UInt16),
         localStartPort: UInt16?,
         allowLan: Bool = false
-    ) {
+    ) throws {
         self.ip = ip
         self.remotePort = .range(start: remotePorts.0, end: remotePorts.1)
         self.localPort = localStartPort
         self.allowLan = allowLan
 
         if let localStartPort {
-            self.forwardRuleId = forwardRange(
+            self.forwardRuleId = try forwardRange(
                 ip: ip,
                 remotePortStart: remotePorts.0,
                 remotePortEnd: remotePorts.1,
@@ -100,7 +101,7 @@ class ForwardedItem: Identifiable {
                 allowLan: allowLan
             )
         } else {
-            self.forwardRuleId = forwardRange(
+            self.forwardRuleId = try forwardRange(
                 ip: ip,
                 remotePortStart: remotePorts.0,
                 remotePortEnd: remotePorts.1,
@@ -115,7 +116,7 @@ class ForwardedItem: Identifiable {
         remotePort: Port,
         localPort: UInt16? = nil,
         allowLan: Bool = false
-    ) {
+    ) throws {
         self.ip = ip
         self.remotePort = remotePort
         self.localPort = localPort
@@ -124,14 +125,14 @@ class ForwardedItem: Identifiable {
         switch remotePort {
         case let .single(port):
             if let localPort {
-                self.forwardRuleId = forward(
+                self.forwardRuleId = try forward(
                     ip: ip,
                     remotePort: port,
                     localPort: localPort,
                     allowLan: allowLan
                 )
             } else {
-                self.forwardRuleId = forward(
+                self.forwardRuleId = try forward(
                     ip: ip,
                     remotePort: port,
                     localPort: port,
@@ -141,7 +142,7 @@ class ForwardedItem: Identifiable {
 
         case let .range(startPort, endPort):
             if let localPort {
-                self.forwardRuleId = forwardRange(
+                self.forwardRuleId = try forwardRange(
                     ip: ip,
                     remotePortStart: startPort,
                     remotePortEnd: endPort,
@@ -149,7 +150,7 @@ class ForwardedItem: Identifiable {
                     allowLan: allowLan
                 )
             } else {
-                self.forwardRuleId = forwardRange(
+                self.forwardRuleId = try forwardRange(
                     ip: ip,
                     remotePortStart: startPort,
                     remotePortEnd: endPort,
@@ -161,6 +162,13 @@ class ForwardedItem: Identifiable {
     }
 
     deinit {
+        if !hasDeinit {
+            cancelForward(forwardRuleId: self.forwardRuleId)
+        }
+    }
+
+    public func destory() {
         cancelForward(forwardRuleId: self.forwardRuleId)
+        hasDeinit = true
     }
 }

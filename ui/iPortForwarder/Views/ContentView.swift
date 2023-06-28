@@ -13,9 +13,15 @@ struct ContentView: View {
                         ForwardedItemRow(
                             item: item,
                             onChange: { ipAddress, remotePort, localPort, allowLan in
-                                let index = items.firstIndex(where: { $0 === item })
-                                withAnimation {
-                                    items[index!] = ForwardedItem(ip: ipAddress, remotePort: remotePort, localPort: localPort, allowLan: allowLan)
+                                let index = items.firstIndex(where: { $0 === item })!
+                                items[index].destory()
+                                do {
+                                    let newItem = try ForwardedItem(ip: ipAddress, remotePort: remotePort, localPort: localPort, allowLan: allowLan)
+                                    withAnimation {
+                                        items[index] = newItem
+                                    }
+                                } catch {
+                                    showIpfError(error)
                                 }
                             },
                             onDelete: {

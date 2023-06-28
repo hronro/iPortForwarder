@@ -1,6 +1,21 @@
+import AppKit
 import SwiftUI
 
 import Libipf
+
+func showIpfError(_ error: Error) {
+    let alert = NSAlert()
+    alert.messageText = "Error"
+    switch error {
+    case let ipfError as IpfError:
+        alert.informativeText = "\(ipfError.message())."
+    default:
+        alert.informativeText = error.localizedDescription
+    }
+    alert.alertStyle = NSAlert.Style.critical
+    alert.addButton(withTitle: "OK")
+    alert.runModal()
+}
 
 struct ForwardedItemRow: View {
     var item: ForwardedItem?
@@ -191,8 +206,14 @@ struct ForwardedItemRow: View {
                                             onChange(ipAddress, remotePort, localPort, allowLan)
                                         }
                                     }
-                                } else if onNewItemAdded != nil {
-                                    onNewItemAdded!(ForwardedItem(ip: ipAddress, remotePort: remotePort, localPort: localPort, allowLan: allowLan))
+                                } else if let onNewItemAdded {
+                                    do {
+                                        let newItem =
+                                        try ForwardedItem(ip: ipAddress, remotePort: remotePort, localPort: localPort, allowLan: allowLan)
+                                        onNewItemAdded(newItem)
+                                    } catch {
+                                        showIpfError(error)
+                                    }
                                 }
                             } label: {
                                 Label("OK", systemImage: "checkmark")
@@ -376,9 +397,9 @@ struct ForwardedItemRow: View {
 struct ForwardedItemRow_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            ForwardedItemRow(item: ForwardedItem(ip: "192.168.100.1", remotePort: .single(port: 1234)))
-            ForwardedItemRow(item: ForwardedItem(ip: "192.168.100.1", remotePort: .single(port: 2080), localPort: 3080))
-            ForwardedItemRow(item: ForwardedItem(ip: "192.168.100.1", remotePort: .range(start: 23456, end: 23465)))
+            ForwardedItemRow(item: try! ForwardedItem(ip: "192.168.100.1", remotePort: .single(port: 1234)))
+            ForwardedItemRow(item: try! ForwardedItem(ip: "192.168.100.1", remotePort: .single(port: 2080), localPort: 3080))
+            ForwardedItemRow(item: try! ForwardedItem(ip: "192.168.100.1", remotePort: .range(start: 23456, end: 23465)))
             ForwardedItemRow()
         }
     }

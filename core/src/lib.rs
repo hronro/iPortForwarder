@@ -28,7 +28,7 @@ static AVAILABLE_RULE_IDS: Lazy<Mutex<Vec<i8>>> = Lazy::new(|| {
 static RUNNING_RULES: Lazy<Mutex<HashMap<i8, ForwardRuleHandler>>> =
     Lazy::new(|| Mutex::new(HashMap::with_capacity(128)));
 
-static ERROR_HANDLER: OnceLock<extern "C" fn(i8)> = OnceLock::new();
+static ERROR_HANDLER: OnceLock<extern "C" fn(i8, i8)> = OnceLock::new();
 
 /// Get a new rule ID.
 #[inline]
@@ -128,7 +128,7 @@ pub extern "C" fn ipf_forward(
                 },
                 Err(error) => {
                     if let Some(error_handler) = ERROR_HANDLER.get() {
-                        error_handler(Error::from(error) as i8);
+                        error_handler(rule_id, Error::from(error) as i8);
                     }
                 }
             }
@@ -204,7 +204,7 @@ pub extern "C" fn ipf_forward_range(
                         Err(error) => {
                             _ = ipf_cancel_forward(rule_id);
                             if let Some(error_handler) = ERROR_HANDLER.get() {
-                                error_handler(Error::from(error) as i8);
+                                error_handler(rule_id, Error::from(error) as i8);
                             }
                         }
                     }
@@ -237,7 +237,7 @@ pub extern "C" fn ipf_cancel_forward(forward_rule_id: i8) -> i8 {
 
 /// Cancel a forward rule.
 #[no_mangle]
-pub extern "C" fn ipf_register_error_handler(handler: extern "C" fn(i8)) -> i8 {
+pub extern "C" fn ipf_register_error_handler(handler: extern "C" fn(i8, i8)) -> i8 {
     if ERROR_HANDLER.set(handler).is_ok() {
         0
     } else {
