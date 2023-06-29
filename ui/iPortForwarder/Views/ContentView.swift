@@ -1,44 +1,43 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var items: [ForwardedItem] = [ForwardedItem]()
-
-    @State private var isAddingNew = false
+    @EnvironmentObject var globalState: GlobalState
 
     var body: some View {
         VStack {
             ScrollView {
                 VStack {
-                    ForEach(items) { item in
+                    ForEach(globalState.items) { item in
                         ForwardedItemRow(
                             item: item,
-                            errors: errorsOfForwardRules[item.id],
+                            errors: globalState.errors[item.id],
                             onChange: { ipAddress, remotePort, localPort, allowLan in
-                                let index = items.firstIndex(where: { $0 === item })!
-                                items[index].destory()
+                                let index = globalState.items.firstIndex(where: { $0 === item })!
+                                globalState.items[index].destory()
                                 do {
-                                    errorsOfForwardRules.removeValue(forKey: item.id)
+                                    globalState.errors.removeValue(forKey: item.id)
                                     let newItem = try ForwardedItem(ip: ipAddress, remotePort: remotePort, localPort: localPort, allowLan: allowLan)
                                     withAnimation {
-                                        items[index] = newItem
+                                        globalState.items[index] = newItem
                                     }
                                 } catch {
                                     showIpfError(error)
                                 }
                             },
                             onDelete: {
-                                let index = items.firstIndex(where: { $0 === item })
+                                let index = globalState.items.firstIndex(where: { $0 === item })
                                 withAnimation {
-                                    items.remove(at: index!)
-                                    errorsOfForwardRules.removeValue(forKey: item.id)
+                                    globalState.items.remove(at: index!)
+                                    globalState.errors.removeValue(forKey: item.id)
                                 }
                             }
                         )
                         .contextMenu {
                             Button(action: {
-                                let index = items.firstIndex(where: { $0 === item })
-                                _ = withAnimation {
-                                    items.remove(at: index!)
+                                let index = globalState.items.firstIndex(where: { $0 === item })
+                                withAnimation {
+                                    globalState.items.remove(at: index!)
+                                    globalState.errors.removeValue(forKey: item.id)
                                 }
                             }) {
                                 Text("Delete")
@@ -46,19 +45,19 @@ struct ContentView: View {
                         }
                     }
 
-                    if isAddingNew {
+                    if globalState.isAddingNewItem {
                         ForwardedItemRow(onNewItemAdded: { newItem in
-                            items.append(newItem)
-                            isAddingNew = false
+                            globalState.items.append(newItem)
+                            globalState.isAddingNewItem = false
                         }, onCancel: { withAnimation {
-                            isAddingNew = false
+                            globalState.isAddingNewItem = false
                         } })
                         .transition(.move(edge: .top).combined(with: .opacity))
                     }
                 }
 
                 // A hack to make ScrollView stable
-                if items.isEmpty {
+                if globalState.items.isEmpty {
                     HStack {
                         Spacer()
                     }
@@ -67,10 +66,10 @@ struct ContentView: View {
             .frame(minWidth: 400, minHeight: 100)
             .padding(.all, 8)
 
-            if !isAddingNew {
+            if !globalState.isAddingNewItem {
                 Button("Add New") {
                     withAnimation {
-                        isAddingNew = true
+                        globalState.isAddingNewItem = true
                     }
                 }
                 .padding()

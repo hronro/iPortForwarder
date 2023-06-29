@@ -2,16 +2,30 @@ import SwiftUI
 
 import Libipf
 
-var errorsOfForwardRules: [Int8: [IpfError]] = [:]
+class GlobalState: ObservableObject {
+    @Published var items: [ForwardedItem] = []
+    @Published var errors: [Int8: [IpfError]] = [:]
+    @Published var isAddingNewItem: Bool = false
+
+    public func clear() {
+        items = []
+        errors = [:]
+        isAddingNewItem = false
+    }
+}
+
+var globalState = GlobalState()
 
 @main
 struct iPortForwarderApp: App {
+    @State private var isMainWindowOpened = false
+
     init() {
         try! Libipf.registerErrorHandler {
-            if var errors = errorsOfForwardRules[$0] {
+            if var errors = globalState.errors[$0] {
                 errors.append($1)
             } else {
-                errorsOfForwardRules[$0] = [$1]
+                globalState.errors[$0] = [$1]
             }
         }
     }
@@ -19,6 +33,26 @@ struct iPortForwarderApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(globalState)
+                .onAppear {
+                    isMainWindowOpened = true
+                }
+                .onDisappear {
+                    isMainWindowOpened = false
+                    globalState.clear()
+                }
+        }
+        .commands {
+            CommandGroup(replacing: .newItem) {
+                if isMainWindowOpened {
+                    Button("New Forward Item") {
+                        withAnimation {
+                            globalState.isAddingNewItem = true
+                        }
+                    }
+                    .keyboardShortcut("n", modifiers: .command)
+                }
+            }
         }
     }
 }

@@ -229,21 +229,7 @@ struct ForwardedItemRow: View {
                     if hasChanged() {
                         HStack {
                             Button {
-                                if item != nil {
-                                    withAnimation {
-                                        if let onChange {
-                                            onChange(ipAddress, remotePort, localPort, allowLan)
-                                        }
-                                    }
-                                } else if let onNewItemAdded {
-                                    do {
-                                        let newItem =
-                                        try ForwardedItem(ip: ipAddress, remotePort: remotePort, localPort: localPort, allowLan: allowLan)
-                                        onNewItemAdded(newItem)
-                                    } catch {
-                                        showIpfError(error)
-                                    }
-                                }
+                                submit()
                             } label: {
                                 Label("OK", systemImage: "checkmark")
                                     .labelStyle(.iconOnly)
@@ -404,6 +390,16 @@ struct ForwardedItemRow: View {
             }
             .animation(.spring(), value: errorsHovered)
         }
+        .onSubmit {
+            if isValid() {
+                submit()
+            }
+        }
+        .onExitCommand {
+            if let cancel = onCancel {
+                cancel()
+            }
+        }
     }
 
     func isValid () -> Bool {
@@ -446,6 +442,24 @@ struct ForwardedItemRow: View {
         }
 
         return item!.ip != ipAddress || item!.remotePort != remotePort || item!.localPort != localPort || item!.allowLan != allowLan
+    }
+
+    func submit() {
+        if item != nil {
+            withAnimation {
+                if let onChange {
+                    onChange(ipAddress, remotePort, localPort, allowLan)
+                }
+            }
+        } else if let onNewItemAdded {
+            do {
+                let newItem =
+                try ForwardedItem(ip: ipAddress, remotePort: remotePort, localPort: localPort, allowLan: allowLan)
+                onNewItemAdded(newItem)
+            } catch {
+                showIpfError(error)
+            }
+        }
     }
 
     func reset() {
