@@ -3,6 +3,12 @@ import SwiftUI
 
 import Libipf
 
+extension IpfError: Identifiable {
+    public var id: Int8 {
+        return self.rawValue
+    }
+}
+
 func showIpfError(_ error: Error) {
     let alert = NSAlert()
     alert.messageText = "Error"
@@ -19,6 +25,7 @@ func showIpfError(_ error: Error) {
 
 struct ForwardedItemRow: View {
     var item: DisplayableForwardedItem?
+    var errors: [IpfError]?
 
     var onNewItemAdded: ((_ newItem: ForwardedItem) -> Void)?
     var onChange: ((_ ipAddress: String, _ remotePort: Port, _ localPort: UInt16?, _ allowLan: Bool) -> Void)?
@@ -31,6 +38,7 @@ struct ForwardedItemRow: View {
     @State private var allowLan: Bool
 
     @State private var showSettings: Bool = false
+    @State private var errorsHovered: Bool = false
 
     @FocusState private var ipAddrInFocus: Bool
     @FocusState private var remoteStartPortInFocus: Bool
@@ -66,12 +74,14 @@ struct ForwardedItemRow: View {
 
     init(
         item: DisplayableForwardedItem? = nil,
+        errors: [IpfError]? = nil,
         onNewItemAdded: ((_ newItem: ForwardedItem) -> Void)? = nil,
         onChange: ((_ ipAddress: String, _ remotePort: Port, _ localPort: UInt16?, _ allowLan: Bool) -> Void)? = nil,
         onCancel: (() -> Void)? = nil,
         onDelete: (() -> Void)? = nil
     ) {
         self.item = item
+        self.errors = errors
         self.onNewItemAdded = onNewItemAdded
         self.onChange = onChange
         self.onCancel = onCancel
@@ -86,18 +96,37 @@ struct ForwardedItemRow: View {
         VStack {
             HStack {
                 HStack {
-                    TextField("IP Address", text: $ipAddress.animation()) {
-                    }
-                    .frame(width: 150)
-                    .textFieldStyle(.roundedBorder)
-                    .foregroundColor(ipAddress != "" && !checkIpIsValid(ip: ipAddress) ? .red : .primary)
-                    .focused($ipAddrInFocus)
-                    .onAppear {
-                        // auto focus when this show from `AddNew` button click
-                        if item == nil {
-                            self.ipAddrInFocus = true
+                    ZStack {
+                        if let errors {
+                            if !errors.isEmpty {
+                                Spacer()
+                                    .frame(width: 36)
+
+                                Image(systemName: "x.circle.fill")
+                                    .foregroundColor(.red)
+                                    .transition(.move(edge: .trailing).combined(with: .opacity))
+                            }
                         }
                     }
+                    .onHover {
+                        let hovered = $0
+                        withAnimation {
+                            errorsHovered = hovered
+                        }
+                    }
+                    .animation(.spring(), value: errors)
+
+                    TextField("IP Address", text: $ipAddress.animation()) {}
+                        .frame(width: 150)
+                        .textFieldStyle(.roundedBorder)
+                        .foregroundColor(ipAddress != "" && !checkIpIsValid(ip: ipAddress) ? .red : .primary)
+                        .focused($ipAddrInFocus)
+                        .onAppear {
+                            // auto focus when this show from `AddNew` button click
+                            if item == nil {
+                                self.ipAddrInFocus = true
+                            }
+                        }
 
                     Text(":")
 
@@ -251,6 +280,7 @@ struct ForwardedItemRow: View {
                     }
                 }
             }
+            .frame(height: 32)
 
             if showSettings || item == nil {
                 HStack {
@@ -341,6 +371,38 @@ struct ForwardedItemRow: View {
                 }
                 .transition(.move(edge: .top).combined(with: .opacity))
             }
+
+            VStack {
+                if let errors {
+                    if errorsHovered {
+                        HStack {
+                            VStack {
+                                Spacer()
+                                    .frame(height: 8)
+                                ForEach(errors) {
+                                    let errorMsg = $0.message()
+                                    HStack {
+                                        Text(errorMsg)
+                                            .foregroundColor(.white)
+                                        Spacer()
+                                    }
+                                    .padding(.horizontal, 20)
+                                    .padding(.vertical, 1)
+                                }
+                                Spacer()
+                                    .frame(height: 8)
+                            }
+                            .background(.red)
+                            .cornerRadius(8)
+
+                        }
+                        .padding(.horizontal, 30)
+                        .padding(.vertical, 8)
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                    }
+                }
+            }
+            .animation(.spring(), value: errorsHovered)
         }
     }
 
@@ -421,6 +483,8 @@ struct ForwardedItemRow_Previews: PreviewProvider {
             ForwardedItemRow(item: FakeForwardedItem(ip: "192.168.1.1", remotePort: .single(port: 1234), localPort: 4321))
             ForwardedItemRow(item: FakeForwardedItem(ip: "192.168.1.1", remotePort: .range(start: 1000, end: 2000)))
             ForwardedItemRow(item: FakeForwardedItem(ip: "192.168.1.1", remotePort: .range(start: 1000, end: 2000), localPort: 3000))
+            ForwardedItemRow(item: FakeForwardedItem(ip: "192.168.1.1", remotePort: .single(port: 1234)), errors: [IpfError.addrInUse])
+            ForwardedItemRow(item: FakeForwardedItem(ip: "192.168.1.1", remotePort: .single(port: 1234)), errors: [IpfError.addrInUse, IpfError.invalidLocalPortStart])
         }
     }
 }

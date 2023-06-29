@@ -12,10 +12,12 @@ struct ContentView: View {
                     ForEach(items) { item in
                         ForwardedItemRow(
                             item: item,
+                            errors: errorsOfForwardRules[item.id],
                             onChange: { ipAddress, remotePort, localPort, allowLan in
                                 let index = items.firstIndex(where: { $0 === item })!
                                 items[index].destory()
                                 do {
+                                    errorsOfForwardRules.removeValue(forKey: item.id)
                                     let newItem = try ForwardedItem(ip: ipAddress, remotePort: remotePort, localPort: localPort, allowLan: allowLan)
                                     withAnimation {
                                         items[index] = newItem
@@ -26,8 +28,9 @@ struct ContentView: View {
                             },
                             onDelete: {
                                 let index = items.firstIndex(where: { $0 === item })
-                                _ = withAnimation {
+                                withAnimation {
                                     items.remove(at: index!)
+                                    errorsOfForwardRules.removeValue(forKey: item.id)
                                 }
                             }
                         )
