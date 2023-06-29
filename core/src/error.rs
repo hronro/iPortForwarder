@@ -42,6 +42,9 @@ pub enum Error {
     /// An operation could not be completed, because it failed
     /// to allocate enough memory.
     OutOfMemory = -54,
+
+    /// Too many open files.
+    TooManyOpenFiles = -55,
 }
 impl From<io::Error> for Error {
     fn from(io_error: io::Error) -> Self {
@@ -53,6 +56,8 @@ impl From<io::Error> for Error {
             io::ErrorKind::AlreadyExists => Self::AlreadyExists,
 
             io::ErrorKind::OutOfMemory => Self::OutOfMemory,
+
+            _ if io_error.raw_os_error() == Some(24) => Self::TooManyOpenFiles,
 
             _ => Self::Unknown,
         }

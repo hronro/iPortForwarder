@@ -67,14 +67,17 @@ local function error_message(error)
 		[-52] = 'Address in use',
 		[-53] = 'Already exists',
 		[-54] = 'Out of memory',
+		[-55] = 'Too many open files',
 	}
 
 	return message_table[error]
 end
 
 ---Error handler for libipf
+---@param forward_rule_id number forward rule id
 ---@param error number
-local function ipf_error_handler(error)
+---@diagnostic disable-next-line: unused-local
+local function ipf_error_handler(forward_rule_id, error)
 	print('Error: ' .. error_message(error))
 	os.exit(1)
 end

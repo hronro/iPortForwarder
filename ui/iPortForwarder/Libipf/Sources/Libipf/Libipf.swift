@@ -43,6 +43,9 @@ public enum IpfError: Int8, Error {
     /// to allocate enough memory.
     case outOfMemory = -54
 
+    /// Too many open files.
+    case tooManyOpenFiles = -55
+
     public func message() -> String {
         switch self {
         case .unknown:
@@ -69,6 +72,8 @@ public enum IpfError: Int8, Error {
             return "Address already exists"
         case .outOfMemory:
             return "Out of memory"
+        case .tooManyOpenFiles:
+            return "Too many open files"
         }
     }
 }
