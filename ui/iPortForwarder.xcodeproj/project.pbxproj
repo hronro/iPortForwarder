@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		960312BC2A52E69000B79937 /* ShowErrorDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960312BB2A52E69000B79937 /* ShowErrorDialog.swift */; };
 		967344D92A1DE03400141A9E /* iPortForwarderApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967344D82A1DE03400141A9E /* iPortForwarderApp.swift */; };
 		967344DB2A1DE03400141A9E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967344DA2A1DE03400141A9E /* ContentView.swift */; };
 		967344DD2A1DE03800141A9E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 967344DC2A1DE03800141A9E /* Assets.xcassets */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		960312BB2A52E69000B79937 /* ShowErrorDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowErrorDialog.swift; sourceTree = "<group>"; };
 		967344D52A1DE03400141A9E /* iPortForwarder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iPortForwarder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		967344D82A1DE03400141A9E /* iPortForwarderApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iPortForwarderApp.swift; sourceTree = "<group>"; };
 		967344DA2A1DE03400141A9E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -69,6 +71,7 @@
 				967344E12A1DE03800141A9E /* iPortForwarder.entitlements */,
 				967344DE2A1DE03800141A9E /* Preview Content */,
 				967344E72A1DE8DF00141A9E /* ForwardedItem.swift */,
+				960312BB2A52E69000B79937 /* ShowErrorDialog.swift */,
 			);
 			path = iPortForwarder;
 			sourceTree = "<group>";
@@ -178,6 +181,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				960312BC2A52E69000B79937 /* ShowErrorDialog.swift in Sources */,
 				967344DB2A1DE03400141A9E /* ContentView.swift in Sources */,
 				967344D92A1DE03400141A9E /* iPortForwarderApp.swift in Sources */,
 				967344EB2A1DEAFD00141A9E /* ForwardedItemRow.swift in Sources */,
@@ -224,6 +228,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SELECTED_FILES = readwrite;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -284,6 +289,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SELECTED_FILES = readwrite;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

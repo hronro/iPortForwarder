@@ -2,7 +2,7 @@ import Foundation
 
 import Libipf
 
-enum Port: Equatable {
+enum Port: Codable, Equatable {
     case single(port: UInt16)
     case range(start: UInt16, end: UInt16)
 
@@ -168,6 +168,51 @@ class ForwardedItem: DisplayableForwardedItem, Identifiable {
         }
     }
 
+    init(item: DisplayableForwardedItem) throws {
+        self.ip = item.ip
+        self.remotePort = item.remotePort
+        self.localPort = item.localPort
+        self.allowLan = item.allowLan
+
+        switch remotePort {
+        case let .single(port):
+            if let localPort {
+                self.forwardRuleId = try forward(
+                    ip: ip,
+                    remotePort: port,
+                    localPort: localPort,
+                    allowLan: allowLan
+                )
+            } else {
+                self.forwardRuleId = try forward(
+                    ip: ip,
+                    remotePort: port,
+                    localPort: port,
+                    allowLan: allowLan
+                )
+            }
+
+        case let .range(startPort, endPort):
+            if let localPort {
+                self.forwardRuleId = try forwardRange(
+                    ip: ip,
+                    remotePortStart: startPort,
+                    remotePortEnd: endPort,
+                    localPortStart: localPort,
+                    allowLan: allowLan
+                )
+            } else {
+                self.forwardRuleId = try forwardRange(
+                    ip: ip,
+                    remotePortStart: startPort,
+                    remotePortEnd: endPort,
+                    localPortStart: startPort,
+                    allowLan: allowLan
+                )
+            }
+        }
+    }
+
     deinit {
         if !hasDeinit {
             cancelForward(forwardRuleId: self.forwardRuleId)
@@ -177,5 +222,34 @@ class ForwardedItem: DisplayableForwardedItem, Identifiable {
     public func destory() {
         cancelForward(forwardRuleId: self.forwardRuleId)
         hasDeinit = true
+    }
+}
+
+struct ForwardedItemInfo: Codable, DisplayableForwardedItem {
+    let ip: String
+
+    let remotePort: Port
+
+    let localPort: UInt16?
+
+    let allowLan: Bool
+
+    init(
+        ip: String,
+        remotePort: Port,
+        localPort: UInt16? = nil,
+        allowLan: Bool = false
+    ) {
+        self.ip = ip
+        self.remotePort = remotePort
+        self.localPort = localPort
+        self.allowLan = allowLan
+    }
+
+    init(item: DisplayableForwardedItem) {
+        self.ip = item.ip
+        self.remotePort = item.remotePort
+        self.localPort = item.localPort
+        self.allowLan = item.allowLan
     }
 }

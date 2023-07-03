@@ -21,7 +21,7 @@ struct ContentView: View {
                                         globalState.items[index] = newItem
                                     }
                                 } catch {
-                                    showIpfError(error)
+                                    showErrorDialog(error)
                                 }
                             },
                             onDelete: {

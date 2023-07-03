@@ -9,20 +9,6 @@ extension IpfError: Identifiable {
     }
 }
 
-func showIpfError(_ error: Error) {
-    let alert = NSAlert()
-    alert.messageText = "Error"
-    switch error {
-    case let ipfError as IpfError:
-        alert.informativeText = "\(ipfError.message())."
-    default:
-        alert.informativeText = error.localizedDescription
-    }
-    alert.alertStyle = NSAlert.Style.critical
-    alert.addButton(withTitle: "OK")
-    alert.runModal()
-}
-
 struct ForwardedItemRow: View {
     var item: DisplayableForwardedItem?
     var errors: [IpfError]?
@@ -457,7 +443,7 @@ struct ForwardedItemRow: View {
                 try ForwardedItem(ip: ipAddress, remotePort: remotePort, localPort: localPort, allowLan: allowLan)
                 onNewItemAdded(newItem)
             } catch {
-                showIpfError(error)
+                showErrorDialog(error)
             }
         }
     }
@@ -471,34 +457,15 @@ struct ForwardedItemRow: View {
 }
 
 struct ForwardedItemRow_Previews: PreviewProvider {
-    private struct FakeForwardedItem: DisplayableForwardedItem {
-        let ip: String
-        let remotePort: Port
-        let localPort: UInt16?
-        let allowLan: Bool
-
-        init(
-            ip: String,
-            remotePort: Port,
-            localPort: UInt16? = nil,
-            allowLan: Bool = false
-        ) {
-            self.ip = ip
-            self.remotePort = remotePort
-            self.localPort = localPort
-            self.allowLan = allowLan
-        }
-    }
-
     static var previews: some View {
         Group {
             ForwardedItemRow()
-            ForwardedItemRow(item: FakeForwardedItem(ip: "192.168.1.1", remotePort: .single(port: 1234)))
-            ForwardedItemRow(item: FakeForwardedItem(ip: "192.168.1.1", remotePort: .single(port: 1234), localPort: 4321))
-            ForwardedItemRow(item: FakeForwardedItem(ip: "192.168.1.1", remotePort: .range(start: 1000, end: 2000)))
-            ForwardedItemRow(item: FakeForwardedItem(ip: "192.168.1.1", remotePort: .range(start: 1000, end: 2000), localPort: 3000))
-            ForwardedItemRow(item: FakeForwardedItem(ip: "192.168.1.1", remotePort: .single(port: 1234)), errors: [IpfError.addrInUse])
-            ForwardedItemRow(item: FakeForwardedItem(ip: "192.168.1.1", remotePort: .single(port: 1234)), errors: [IpfError.addrInUse, IpfError.invalidLocalPortStart])
+            ForwardedItemRow(item: ForwardedItemInfo(ip: "192.168.1.1", remotePort: .single(port: 1234)))
+            ForwardedItemRow(item: ForwardedItemInfo(ip: "192.168.1.1", remotePort: .single(port: 1234), localPort: 4321))
+            ForwardedItemRow(item: ForwardedItemInfo(ip: "192.168.1.1", remotePort: .range(start: 1000, end: 2000)))
+            ForwardedItemRow(item: ForwardedItemInfo(ip: "192.168.1.1", remotePort: .range(start: 1000, end: 2000), localPort: 3000))
+            ForwardedItemRow(item: ForwardedItemInfo(ip: "192.168.1.1", remotePort: .single(port: 1234)), errors: [IpfError.addrInUse])
+            ForwardedItemRow(item: ForwardedItemInfo(ip: "192.168.1.1", remotePort: .single(port: 1234)), errors: [IpfError.addrInUse, IpfError.invalidLocalPortStart])
         }
     }
 }
