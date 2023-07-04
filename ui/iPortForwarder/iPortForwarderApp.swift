@@ -46,11 +46,13 @@ struct iPortForwarderApp: App {
     @State private var isMainWindowOpened = false
 
     init() {
-        try! Libipf.registerErrorHandler {
-            if var errors = globalState.errors[$0] {
-                errors.append($1)
-            } else {
-                globalState.errors[$0] = [$1]
+        try! Libipf.registerErrorHandler { id, ipfError in
+            DispatchQueue.main.async {
+                if var errors = globalState.errors[id] {
+                    errors.append(ipfError)
+                } else {
+                    globalState.errors[id] = [ipfError]
+                }
             }
         }
     }
