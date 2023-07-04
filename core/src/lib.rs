@@ -202,7 +202,6 @@ pub extern "C" fn ipf_forward_range(
                             }
                         },
                         Err(error) => {
-                            _ = ipf_cancel_forward(rule_id);
                             if let Some(error_handler) = ERROR_HANDLER.get() {
                                 error_handler(rule_id, Error::from(error) as i8);
                             }
