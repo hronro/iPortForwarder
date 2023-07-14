@@ -133,7 +133,7 @@ struct iPortForwarderApp: App {
                                     do {
                                         var jsonString: String
                                         if #available(macOS 13, *) {
-                                            jsonString = try String(contentsOfFile: openUrl.path(percentEncoded: true))
+                                            jsonString = try String(contentsOfFile: openUrl.path(percentEncoded: false))
                                         } else {
                                             jsonString = try String(contentsOfFile: openUrl.path)
                                         }
