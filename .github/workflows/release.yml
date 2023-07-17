@@ -33,12 +33,26 @@ jobs:
       - name: Xcode build
         run: |
           cd ui
-          xcodebuild archive -scheme iPortForwarder -destination 'platform=macOS,name=Any Mac'
+          xcodebuild archive \
+            -scheme iPortForwarder \
+            -destination 'platform=macOS,name=Any Mac' \
+            -archivePath build.xcarchive
 
       - name: Make dmg
         run: |
-          cd ~/Library/Developer/Xcode/Archives/*/*/Products/Applications
-          hdiutil create ${{ github.workspace }}/iPortForwarder.dmg -volname iPortForwarder -fs HFS+ -srcfolder ./iPortForwarder.app -ov -format UDZO
+          brew install create-dmg
+          create-dmg \
+            --volname "Install iPortForwarder" \
+            --volicon "ui/build.xcarchive/Products/Applications/iPortForwarder.app/Contents/Resources/AppIcon.icns" \
+            --window-pos 200 120 \
+            --window-size 600 400 \
+            --icon-size 128 \
+            --icon "iPortForwarder.app" 150 150 \
+            --hide-extension "iPortForwarder.app" \
+            --app-drop-link 422 150 \
+            --skip-jenkins \
+            "iPortForwarder.dmg" \
+            "ui/build.xcarchive/Products/Applications"
 
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v1
