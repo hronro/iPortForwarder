@@ -15,6 +15,8 @@
 		967344E82A1DE8DF00141A9E /* ForwardedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967344E72A1DE8DF00141A9E /* ForwardedItem.swift */; };
 		967344EB2A1DEAFD00141A9E /* ForwardedItemRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967344EA2A1DEAFD00141A9E /* ForwardedItemRow.swift */; };
 		9673452F2A1F8FF900141A9E /* Libipf in Frameworks */ = {isa = PBXBuildFile; productRef = 9673452E2A1F8FF900141A9E /* Libipf */; };
+		96E31ACA2A68EF1A004DAF36 /* iPortForwarderCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E31AC92A68EF1A004DAF36 /* iPortForwarderCommands.swift */; };
+		96E31ACC2A68F0D5004DAF36 /* iPortForwarderState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E31ACB2A68F0D5004DAF36 /* iPortForwarderState.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +31,8 @@
 		967344EA2A1DEAFD00141A9E /* ForwardedItemRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForwardedItemRow.swift; sourceTree = "<group>"; };
 		9673452C2A1F8FE700141A9E /* Libipf */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Libipf; path = iPortForwarder/Libipf; sourceTree = "<group>"; };
 		9673452D2A1F8FED00141A9E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		96E31AC92A68EF1A004DAF36 /* iPortForwarderCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iPortForwarderCommands.swift; sourceTree = "<group>"; };
+		96E31ACB2A68F0D5004DAF36 /* iPortForwarderState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iPortForwarderState.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +71,8 @@
 				9673452D2A1F8FED00141A9E /* Info.plist */,
 				967344E92A1DEA1300141A9E /* Views */,
 				967344D82A1DE03400141A9E /* iPortForwarderApp.swift */,
+				96E31AC92A68EF1A004DAF36 /* iPortForwarderCommands.swift */,
+				96E31ACB2A68F0D5004DAF36 /* iPortForwarderState.swift */,
 				967344DC2A1DE03800141A9E /* Assets.xcassets */,
 				967344E12A1DE03800141A9E /* iPortForwarder.entitlements */,
 				967344DE2A1DE03800141A9E /* Preview Content */,
@@ -183,7 +189,9 @@
 			files = (
 				960312BC2A52E69000B79937 /* ShowErrorDialog.swift in Sources */,
 				967344DB2A1DE03400141A9E /* ContentView.swift in Sources */,
+				96E31ACC2A68F0D5004DAF36 /* iPortForwarderState.swift in Sources */,
 				967344D92A1DE03400141A9E /* iPortForwarderApp.swift in Sources */,
+				96E31ACA2A68EF1A004DAF36 /* iPortForwarderCommands.swift in Sources */,
 				967344EB2A1DEAFD00141A9E /* ForwardedItemRow.swift in Sources */,
 				967344E82A1DE8DF00141A9E /* ForwardedItem.swift in Sources */,
 			);
