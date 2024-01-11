@@ -456,16 +456,14 @@ struct ForwardedItemRow: View {
     }
 }
 
-struct ForwardedItemRow_Previews: PreviewProvider {
-    static var previews: some View {
-        Group {
-            ForwardedItemRow()
-            ForwardedItemRow(item: ForwardedItemInfo(ip: "192.168.1.1", remotePort: .single(port: 1234)))
-            ForwardedItemRow(item: ForwardedItemInfo(ip: "192.168.1.1", remotePort: .single(port: 1234), localPort: 4321))
-            ForwardedItemRow(item: ForwardedItemInfo(ip: "192.168.1.1", remotePort: .range(start: 1000, end: 2000)))
-            ForwardedItemRow(item: ForwardedItemInfo(ip: "192.168.1.1", remotePort: .range(start: 1000, end: 2000), localPort: 3000))
-            ForwardedItemRow(item: ForwardedItemInfo(ip: "192.168.1.1", remotePort: .single(port: 1234)), errors: [IpfError.addrInUse])
-            ForwardedItemRow(item: ForwardedItemInfo(ip: "192.168.1.1", remotePort: .single(port: 1234)), errors: [IpfError.addrInUse, IpfError.invalidLocalPortStart])
-        }
+#Preview {
+    Group {
+        ForwardedItemRow()
+        ForwardedItemRow(item: ForwardedItemInfo(ip: "192.168.1.1", remotePort: .single(port: 1234)))
+        ForwardedItemRow(item: ForwardedItemInfo(ip: "192.168.1.1", remotePort: .single(port: 1234), localPort: 4321))
+        ForwardedItemRow(item: ForwardedItemInfo(ip: "192.168.1.1", remotePort: .range(start: 1000, end: 2000)))
+        ForwardedItemRow(item: ForwardedItemInfo(ip: "192.168.1.1", remotePort: .range(start: 1000, end: 2000), localPort: 3000))
+        ForwardedItemRow(item: ForwardedItemInfo(ip: "192.168.1.1", remotePort: .single(port: 1234)), errors: [IpfError.addrInUse])
+        ForwardedItemRow(item: ForwardedItemInfo(ip: "192.168.1.1", remotePort: .single(port: 1234)), errors: [IpfError.addrInUse, IpfError.invalidLocalPortStart])
     }
 }
