@@ -12,10 +12,26 @@ Go to the [GitHub Releases](https://github.com/hronro/iPortForwarder/releases) p
 
 ## FAQ
 
-<details><summary>What does the "Too many open files" error mean?</summary>
-	By default, macOS allows a maximum of 256 files to be opened. This means you can forward up to 256 ports, or fewer if your system already has open files. To bypass this limitation, simply run `ulimit -n 2048` (or replace the number with your desired value) in your terminal.
+<details>
+	<summary>Is it possible to save the ports forwarding list?</summary>
+Yes. To save your current forwarding list, click on "File" in the menu bar and select "Save Current Forwarding List." Alternatively, you can press <kbd>⌘</kbd> + <kbd>S</kbd>. Choose a location to save the file.
+
+To load a saved list, go to "File" in the menu bar and choose "Import Forwarding List." You can also use the shortcut <kbd>⌘</kbd> + <kbd>O</kbd>. Select the file that you previously saved.
+
+![screenshot for saving and loading](./docs/save-and-load.avif)
 </details>
 
-<details><summary>What does the "Permission denied" error mean?</summary>
-	This error usually happens when trying to forward a port to a local port below 1024. In macOS, binding a port less than 1024 to 127.0.0.1 needs root privileges, which iPortForwarder currently does not support. However, strangely enough, macOS doesn't require root privileges for binding ports less than 1024 to 0.0.0.0, so you can easily bypass this limitation by enabling the "Allow LAN" option.
+<details>
+	<summary>Can I run it as a service (automatically forward ports at login)?</summary>
+Yes. To begin, save a forwarding list by pressing <kbd>⌘</kbd> + <kbd>S</kbd>. Next, open the settings window either from the menu bar or by pressing <kbd>⌘</kbd> + <kbd>,</kbd>. Check the "Launch at login" and "Load configurations at startup" checkboxes. Finally, add a previously saved configuration file (you can add multiple files, but ensure they do not conflict with each other).
+</details>
+
+<details>
+	<summary>What does the "Too many open files" error mean?</summary>
+By default, macOS allows a maximum of 256 files to be opened. This means you can forward up to 256 ports, or fewer if your system already has open files. To bypass this limitation, simply run `ulimit -n 2048` (or replace the number with your desired value) in your terminal.
+</details>
+
+<details>
+	<summary>What does the "Permission denied" error mean?</summary>
+This error usually happens when trying to forward a port to a local port below 1024. In macOS, binding a port less than 1024 to 127.0.0.1 needs root privileges, which iPortForwarder currently does not support. However, strangely enough, macOS doesn't require root privileges for binding ports less than 1024 to 0.0.0.0, so you can easily bypass this limitation by enabling the "Allow LAN" option.
 </details>
