@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		960312BC2A52E69000B79937 /* ShowErrorDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960312BB2A52E69000B79937 /* ShowErrorDialog.swift */; };
+		962F6D502B4FDAD100961137 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962F6D4F2B4FDAD100961137 /* SettingsView.swift */; };
+		962F6D532B4FDED400961137 /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = 962F6D522B4FDED400961137 /* LaunchAtLogin */; };
 		967344D92A1DE03400141A9E /* iPortForwarderApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967344D82A1DE03400141A9E /* iPortForwarderApp.swift */; };
 		967344DB2A1DE03400141A9E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967344DA2A1DE03400141A9E /* ContentView.swift */; };
 		967344DD2A1DE03800141A9E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 967344DC2A1DE03800141A9E /* Assets.xcassets */; };
@@ -21,6 +23,7 @@
 
 /* Begin PBXFileReference section */
 		960312BB2A52E69000B79937 /* ShowErrorDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowErrorDialog.swift; sourceTree = "<group>"; };
+		962F6D4F2B4FDAD100961137 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		967344D52A1DE03400141A9E /* iPortForwarder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iPortForwarder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		967344D82A1DE03400141A9E /* iPortForwarderApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iPortForwarderApp.swift; sourceTree = "<group>"; };
 		967344DA2A1DE03400141A9E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -40,6 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				962F6D532B4FDED400961137 /* LaunchAtLogin in Frameworks */,
 				9673452F2A1F8FF900141A9E /* Libipf in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -95,6 +99,7 @@
 			children = (
 				967344DA2A1DE03400141A9E /* ContentView.swift */,
 				967344EA2A1DEAFD00141A9E /* ForwardedItemRow.swift */,
+				962F6D4F2B4FDAD100961137 /* SettingsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -124,6 +129,7 @@
 				967344D12A1DE03400141A9E /* Sources */,
 				967344D22A1DE03400141A9E /* Frameworks */,
 				967344D32A1DE03400141A9E /* Resources */,
+				962F6D542B4FEAA000961137 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -132,6 +138,7 @@
 			name = iPortForwarder;
 			packageProductDependencies = (
 				9673452E2A1F8FF900141A9E /* Libipf */,
+				962F6D522B4FDED400961137 /* LaunchAtLogin */,
 			);
 			productName = iPortForwarder;
 			productReference = 967344D52A1DE03400141A9E /* iPortForwarder.app */;
@@ -160,6 +167,9 @@
 				en,
 			);
 			mainGroup = 967344CC2A1DE03400141A9E;
+			packageReferences = (
+				962F6D512B4FDED400961137 /* XCRemoteSwiftPackageReference "LaunchAtLogin" */,
+			);
 			productRefGroup = 967344D62A1DE03400141A9E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -181,12 +191,34 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		962F6D542B4FEAA000961137 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${BUILT_PRODUCTS_DIR}/LaunchAtLogin_LaunchAtLogin.bundle/Contents/Resources/copy-helper-swiftpm.sh\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		967344D12A1DE03400141A9E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				960312BC2A52E69000B79937 /* ShowErrorDialog.swift in Sources */,
+				962F6D502B4FDAD100961137 /* SettingsView.swift in Sources */,
 				967344DB2A1DE03400141A9E /* ContentView.swift in Sources */,
 				96E31ACC2A68F0D5004DAF36 /* iPortForwarderState.swift in Sources */,
 				967344D92A1DE03400141A9E /* iPortForwarderApp.swift in Sources */,
@@ -332,6 +364,7 @@
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"iPortForwarder/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iPortForwarder/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = iPortForwarder;
@@ -362,6 +395,7 @@
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"iPortForwarder/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iPortForwarder/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = iPortForwarder;
@@ -403,7 +437,23 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		962F6D512B4FDED400961137 /* XCRemoteSwiftPackageReference "LaunchAtLogin" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sindresorhus/LaunchAtLogin";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
+		962F6D522B4FDED400961137 /* LaunchAtLogin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 962F6D512B4FDED400961137 /* XCRemoteSwiftPackageReference "LaunchAtLogin" */;
+			productName = LaunchAtLogin;
+		};
 		9673452E2A1F8FF900141A9E /* Libipf */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Libipf;
