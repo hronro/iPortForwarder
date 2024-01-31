@@ -27,7 +27,7 @@ public enum IpfError: Int8, Error {
     case invalidRemotePortEnd = -15
 
     /// The error handler has already been registered.
-    case errorHandlerAlreadyRegistered = -16
+    case handlerAlreadyRegistered = -16
 
     // OS errors, from -51 to -127.
     /// Permission denied.
@@ -62,7 +62,7 @@ public enum IpfError: Int8, Error {
             return "The local port start is invalid"
         case .invalidRemotePortEnd:
             return "The remote port end is invalid"
-        case .errorHandlerAlreadyRegistered:
+        case .handlerAlreadyRegistered:
             return "The error handler has already been registered"
         case .permissionDenied:
             return "Permission denied"
@@ -133,7 +133,7 @@ public func registerErrorHandler(_ handler: @escaping (Int8, IpfError) -> Void) 
             throw IpfError(rawValue: returnCode)!
         }
     } else {
-        throw IpfError.errorHandlerAlreadyRegistered
+        throw IpfError.handlerAlreadyRegistered
     }
 }
 

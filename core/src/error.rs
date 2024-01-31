@@ -27,7 +27,7 @@ pub enum Error {
     InvalidRemotePortEnd = -15,
 
     /// The error handler has already been registered.
-    ErrorHandlerAlreadyRegistered = -16,
+    HandlerAlreadyRegistered = -16,
 
     // OS errors, from -51 to -127.
     /// Permission denied.

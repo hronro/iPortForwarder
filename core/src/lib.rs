@@ -240,6 +240,6 @@ pub extern "C" fn ipf_register_error_handler(handler: extern "C" fn(i8, i8)) -> 
     if ERROR_HANDLER.set(handler).is_ok() {
         0
     } else {
-        Error::ErrorHandlerAlreadyRegistered as i8
+        Error::HandlerAlreadyRegistered as i8
     }
 }
