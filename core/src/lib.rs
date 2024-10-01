@@ -4,9 +4,8 @@ use std::collections::HashMap;
 use std::ffi::CStr;
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 use std::os::raw::c_char;
-use std::sync::{Mutex, OnceLock};
+use std::sync::{LazyLock, Mutex, OnceLock};
 
-use once_cell::sync::Lazy;
 use tokio::io::copy_bidirectional;
 use tokio::net::{TcpListener, TcpStream};
 use tokio::runtime::Runtime;
@@ -16,17 +15,16 @@ mod error;
 
 use error::Error;
 
-// TODO: use `std::sync::LazyLock` when it's stable.
-static RT: Lazy<Runtime> = Lazy::new(|| Runtime::new().unwrap());
+static RT: LazyLock<Runtime> = LazyLock::new(|| Runtime::new().unwrap());
 
-static AVAILABLE_RULE_IDS: Lazy<Mutex<Vec<i8>>> = Lazy::new(|| {
+static AVAILABLE_RULE_IDS: LazyLock<Mutex<Vec<i8>>> = LazyLock::new(|| {
     let mut pool = Vec::with_capacity(128);
     pool.extend(0..=127);
     Mutex::new(pool)
 });
 
-static RUNNING_RULES: Lazy<Mutex<HashMap<i8, ForwardRuleHandler>>> =
-    Lazy::new(|| Mutex::new(HashMap::with_capacity(128)));
+static RUNNING_RULES: LazyLock<Mutex<HashMap<i8, ForwardRuleHandler>>> =
+    LazyLock::new(|| Mutex::new(HashMap::with_capacity(128)));
 
 static ERROR_HANDLER: OnceLock<extern "C" fn(i8, i8)> = OnceLock::new();
 
