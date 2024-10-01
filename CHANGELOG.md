@@ -10,3 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - [CHANGELOG.md](https://github.com/hronro/iPortForwarder/blob/master/CHANGELOG.md). All the notable changes will be documented in this file from this release.
+
+### Changed
+
+- Upgrade Rust to v1.81.0 in CI.

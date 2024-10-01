@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install Rust
-        uses: dtolnay/rust-toolchain@1.72
+        uses: dtolnay/rust-toolchain@1.81
         with:
           targets: aarch64-apple-darwin,x86_64-apple-darwin
 
