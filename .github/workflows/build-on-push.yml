@@ -37,19 +37,12 @@ jobs:
 
       - name: Make dmg
         run: |
-          brew install create-dmg
-          create-dmg \
-            --volname "Install iPortForwarder" \
-            --volicon "ui/build.xcarchive/Products/Applications/iPortForwarder.app/Contents/Resources/AppIcon.icns" \
-            --window-pos 200 120 \
-            --window-size 600 400 \
-            --icon-size 128 \
-            --icon "iPortForwarder.app" 150 150 \
-            --hide-extension "iPortForwarder.app" \
-            --app-drop-link 422 150 \
-            --skip-jenkins \
-            "iPortForwarder.dmg" \
-            "ui/build.xcarchive/Products/Applications"
+          brew install graphicsmagick imagemagick
+          npm install --global create-dmg
+          # Ignore the failure since there is no code signing identity,
+          # the DMG is still created and fine.
+          create-dmg 'ui/build.xcarchive/Products/Applications/iPortForwarder.app' || true
+          mv iPortForwarder*.dmg iPortForwarder.dmg
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
