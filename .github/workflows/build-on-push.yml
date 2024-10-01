@@ -52,7 +52,7 @@ jobs:
             "ui/build.xcarchive/Products/Applications"
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: iPortForwarder
           path: ${{ github.workspace }}/iPortForwarder.dmg
