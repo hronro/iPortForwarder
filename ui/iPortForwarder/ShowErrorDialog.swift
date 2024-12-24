@@ -2,7 +2,7 @@ import AppKit
 
 import Libipf
 
-func showErrorDialog(_ error: Error) {
+@MainActor func showErrorDialog(_ error: Error) {
     let alert = NSAlert()
     alert.messageText = "Error"
     switch error {

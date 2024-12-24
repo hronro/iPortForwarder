@@ -3,7 +3,7 @@ import SwiftUI
 
 import Libipf
 
-extension IpfError: Identifiable {
+extension IpfError: @retroactive Identifiable {
     public var id: Int8 {
         return self.rawValue
     }

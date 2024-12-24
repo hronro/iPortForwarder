@@ -14,7 +14,7 @@ class GlobalState: ObservableObject {
     }
 }
 
-var globalState = GlobalState()
+@MainActor var globalState = GlobalState()
 
 func initLibipfErrorHandler() {
     try! Libipf.registerErrorHandler { id, ipfError in
