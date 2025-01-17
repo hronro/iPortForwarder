@@ -1,6 +1,6 @@
 import AppKit
+import ServiceManagement
 import SwiftUI
-import LaunchAtLogin
 
 extension Array: @retroactive RawRepresentable where Element: Codable {
     public init?(rawValue: String) {
@@ -20,20 +20,49 @@ extension Array: @retroactive RawRepresentable where Element: Codable {
     }
 }
 
+class LaunchingAtLogin: ObservableObject {
+    var enabled: Bool {
+        get {
+            if #available(macOS 13, *) {
+                return SMAppService.mainApp.status == .enabled
+            } else {
+                return false
+            }
+        }
+        
+        set {
+            if #available(macOS 13, *) {
+                if newValue {
+                    if SMAppService.mainApp.status == .enabled {
+                        try? SMAppService.mainApp.unregister()
+                    }
+                    
+                    try? SMAppService.mainApp.register()
+                } else {
+                    try? SMAppService.mainApp.unregister()
+                }
+                objectWillChange.send()
+            }
+        }
+    }
+}
+
 struct SettingsView: View {
     var window: NSWindow? {
         get {
             return NSApplication.shared.windows.first
         }
     }
+    
+    @StateObject private var launchingAtLogin = LaunchingAtLogin()
 
     @AppStorage("loadConfigurationsOnStartup") private var loadConfigurationsOnStartup = false
     @AppStorage("configurationsWillBeLoaded") private var configurationsWillBeLoaded: [URL] = []
 
     var body: some View {
         VStack(alignment: .leading) {
-            LaunchAtLogin.Toggle {
-                Text("Launch at login")
+            if #available(macOS 13, *) {
+                Toggle("Launch at login", isOn: $launchingAtLogin.enabled)
             }
 
             Toggle("Load configurations at startup", isOn: $loadConfigurationsOnStartup)
