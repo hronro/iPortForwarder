@@ -35,7 +35,6 @@ jobs:
           cd ui
           xcodebuild archive \
             -scheme iPortForwarder \
-            -destination 'platform=macOS,name=Any Mac' \
             -archivePath build.xcarchive
 
       - name: Make dmg
