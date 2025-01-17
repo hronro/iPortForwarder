@@ -35,7 +35,9 @@ jobs:
           cd ui
           xcodebuild archive \
             -scheme iPortForwarder \
-            -archivePath build.xcarchive
+            -archivePath build.xcarchive \
+            -configuration Release \
+            ONLY_ACTIVE_ARCH=NO
 
       - name: Make dmg
         run: |
