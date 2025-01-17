@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Upgrade Rust to v1.83.0 in CI.
+- Upgrade Rust to v1.84.0 in CI.
 - Remove Rust dependency `once_cell` and use Rust standard library instead, which helps reducing binary size.
 - Better DMG file packaging, by using JavaScript-based [create-dmg](https://github.com/sindresorhus/create-dmg).
 - Migrate to Swift 6 and Xcode 16.2
