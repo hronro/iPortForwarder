@@ -18,3 +18,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Better DMG file packaging, by using JavaScript-based [create-dmg](https://github.com/sindresorhus/create-dmg).
 - Migrate to Swift 6 and Xcode 16.2
 - Re-implement the "Launch at Login" feature by calling the `ServiceManagement` API directly instead of using `LaunchAtLogin` library. Now "Launch at Login" feature requires macOS 13.
+- Enable [App Sandbox](https://developer.apple.com/documentation/security/app-sandbox) for better security.
