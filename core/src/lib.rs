@@ -2,7 +2,7 @@
 
 use std::collections::HashMap;
 use std::ffi::CStr;
-use std::net::{IpAddr, Ipv4Addr, SocketAddr};
+use std::net::{IpAddr, Ipv4Addr, SocketAddr, ToSocketAddrs};
 use std::os::raw::c_char;
 use std::sync::{LazyLock, Mutex, OnceLock};
 
@@ -87,21 +87,25 @@ pub extern "C" fn ipf_check_ip_is_valid(ip_c_string: *const c_char) -> bool {
 #[no_mangle]
 #[allow(clippy::not_unsafe_ptr_arg_deref)]
 pub extern "C" fn ipf_forward(
-    ip_c_string: *const c_char,
+    address_c_string: *const c_char,
     remote_port: u16,
     local_port: u16,
     allow_lan: bool,
 ) -> i8 {
+    println!("hi");
     if let Some(rule_id) = get_new_rule_id() {
-        let ip_str = unsafe {
-            match CStr::from_ptr(ip_c_string).to_str() {
-                Ok(ip_str) => ip_str,
+        let addr_str = unsafe {
+            match CStr::from_ptr(address_c_string).to_str() {
+                Ok(addr_str) => addr_str,
                 Err(_) => return Error::InvalidString as i8,
             }
         };
-        let ip: IpAddr = match ip_str.parse() {
-            Ok(ip) => ip,
-            Err(_) => return Error::InvalidIpAddr as i8,
+        let socket_addr = match addr_str.parse::<IpAddr>() {
+            Ok(ip) => SocketAddr::new(ip, remote_port),
+            Err(_) => match (addr_str, remote_port).to_socket_addrs() {
+                Ok(mut socket_addrs) => socket_addrs.next().unwrap(),
+                Err(_) => return Error::AddressCantBeResolved as i8,
+            },
         };
 
         let join_handler = RT.spawn(async move {
@@ -116,7 +120,7 @@ pub extern "C" fn ipf_forward(
                 Ok(listener) => loop {
                     if let Ok((mut ingress, _)) = listener.accept().await {
                         if let Ok(mut egress) =
-                            TcpStream::connect(SocketAddr::new(ip, remote_port)).await
+                            TcpStream::connect(socket_addr).await
                         {
                             RT.spawn(async move {
                                 _ = copy_bidirectional(&mut ingress, &mut egress).await;
@@ -147,7 +151,7 @@ pub extern "C" fn ipf_forward(
 #[no_mangle]
 #[allow(clippy::not_unsafe_ptr_arg_deref)]
 pub extern "C" fn ipf_forward_range(
-    ip_c_string: *const c_char,
+    address_c_string: *const c_char,
     remote_port_start: u16,
     remote_port_end: u16,
     local_port_start: u16,
@@ -162,15 +166,18 @@ pub extern "C" fn ipf_forward_range(
     }
 
     if let Some(rule_id) = get_new_rule_id() {
-        let ip_str = unsafe {
-            match CStr::from_ptr(ip_c_string).to_str() {
+        let addr_str = unsafe {
+            match CStr::from_ptr(address_c_string).to_str() {
                 Ok(ip_str) => ip_str,
                 Err(_) => return Error::InvalidString as i8,
             }
         };
-        let ip: IpAddr = match ip_str.parse() {
+        let ip = match addr_str.parse::<IpAddr>() {
             Ok(ip) => ip,
-            Err(_) => return Error::InvalidIpAddr as i8,
+            Err(_) => match (addr_str, 0).to_socket_addrs() {
+                Ok(mut socket_addrs) => socket_addrs.next().unwrap().ip(),
+                Err(_) => return Error::AddressCantBeResolved as i8,
+            },
         };
 
         let join_handlers = (remote_port_start..=remote_port_end)

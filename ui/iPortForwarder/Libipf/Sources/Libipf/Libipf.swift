@@ -10,24 +10,21 @@ public enum IpfError: Int8, Error {
     /// Invalid C format string.
     case invalidString = -10
 
-    /// The IP address is invalid.
-    case invalidIpAddr = -11
-
     /// At most 128 rules are allowed.
-    case tooManyRules = -12
+    case tooManyRules = -11
 
     /// The rule ID is invalid.
-    case invalidRuleId = -13
+    case invalidRuleId = -12
 
     /// The local port start is invalid,
     /// which will make the local port end greater than 65535.
-    case invalidLocalPortStart = -14
+    case invalidLocalPortStart = -13
 
     /// The remote port end is invalid.
-    case invalidRemotePortEnd = -15
+    case invalidRemotePortEnd = -14
 
     /// The error handler has already been registered.
-    case handlerAlreadyRegistered = -16
+    case handlerAlreadyRegistered = -15
 
     // OS errors, from -51 to -127.
     /// Permission denied.
@@ -45,6 +42,9 @@ public enum IpfError: Int8, Error {
 
     /// Too many open files.
     case tooManyOpenFiles = -55
+    
+    /// Address can not be resolved.
+    case addressCantBeResolved = -56
 
     public func message() -> String {
         switch self {
@@ -52,8 +52,6 @@ public enum IpfError: Int8, Error {
             return "Unknown error"
         case .invalidString:
             return "Invalid C format string"
-        case .invalidIpAddr:
-            return "The IP address is invalid"
         case .tooManyRules:
             return "At most 128 rules are allowed"
         case .invalidRuleId:
@@ -74,6 +72,8 @@ public enum IpfError: Int8, Error {
             return "Out of memory"
         case .tooManyOpenFiles:
             return "Too many open files"
+        case .addressCantBeResolved:
+            return "Address can not be resolved"
         }
     }
 }
@@ -83,12 +83,12 @@ public func checkIpIsValid(ip: String) -> Bool {
 }
 
 public func forward(
-    ip: String,
+    address: String,
     remotePort: UInt16,
     localPort: UInt16,
     allowLan: Bool
 ) throws -> Int8 {
-    let returnCode = Ipf.ipf_forward(ip.cString(using: .utf8), remotePort, localPort, allowLan)
+    let returnCode = Ipf.ipf_forward(address.cString(using: .utf8), remotePort, localPort, allowLan)
 
     if returnCode < 0 {
         throw IpfError(rawValue: returnCode)!
@@ -98,14 +98,14 @@ public func forward(
 }
 
 public func forwardRange(
-    ip: String,
+    address: String,
     remotePortStart: UInt16,
     remotePortEnd: UInt16,
     localPortStart: UInt16,
     allowLan: Bool
 ) throws -> Int8 {
     let returnCode = Ipf.ipf_forward_range(
-        ip.cString(using: .utf8),
+        address.cString(using: .utf8),
         remotePortStart,
         remotePortEnd,
         localPortStart,

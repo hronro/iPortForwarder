@@ -11,12 +11,12 @@ struct ContentView: View {
                         ForwardedItemRow(
                             item: item,
                             errors: globalState.errors[item.id],
-                            onChange: { ipAddress, remotePort, localPort, allowLan in
+                            onChange: { address, remotePort, localPort, allowLan in
                                 let index = globalState.items.firstIndex(where: { $0 === item })!
                                 globalState.items[index].destory()
                                 do {
                                     globalState.errors.removeValue(forKey: item.id)
-                                    let newItem = try ForwardedItem(ip: ipAddress, remotePort: remotePort, localPort: localPort, allowLan: allowLan)
+                                    let newItem = try ForwardedItem(address: address, remotePort: remotePort, localPort: localPort, allowLan: allowLan)
                                     withAnimation {
                                         globalState.items[index] = newItem
                                     }

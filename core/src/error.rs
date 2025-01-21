@@ -10,24 +10,21 @@ pub enum Error {
     /// Invalid C format string.
     InvalidString = -10,
 
-    /// The IP address is invalid.
-    InvalidIpAddr = -11,
-
     /// At most 128 rules are allowed.
-    TooManyRules = -12,
+    TooManyRules = -11,
 
     /// The rule ID is invalid.
-    InvalidRuleId = -13,
+    InvalidRuleId = -12,
 
     /// The local port start is invalid,
     /// which will make the local port end greater than 65535.
-    InvalidLocalPortStart = -14,
+    InvalidLocalPortStart = -13,
 
     /// The remote port end is invalid.
-    InvalidRemotePortEnd = -15,
+    InvalidRemotePortEnd = -14,
 
     /// The error handler has already been registered.
-    HandlerAlreadyRegistered = -16,
+    HandlerAlreadyRegistered = -15,
 
     // OS errors, from -51 to -127.
     /// Permission denied.
@@ -45,6 +42,9 @@ pub enum Error {
 
     /// Too many open files.
     TooManyOpenFiles = -55,
+
+    /// Address can not be resolved.
+    AddressCantBeResolved = -56,
 }
 impl From<io::Error> for Error {
     fn from(io_error: io::Error) -> Self {

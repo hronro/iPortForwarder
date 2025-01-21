@@ -18,7 +18,7 @@ struct ForwardedItemRow: View {
     var onCancel: (() -> Void)?
     var onDelete: (() -> Void)?
 
-    @State private var ipAddress: String
+    @State private var address: String
     @State private var remotePort: Port
     @State private var localPort: UInt16?
     @State private var allowLan: Bool
@@ -26,7 +26,7 @@ struct ForwardedItemRow: View {
     @State private var showSettings: Bool = false
     @State private var errorsHovered: Bool = false
 
-    @FocusState private var ipAddrInFocus: Bool
+    @FocusState private var addrInFocus: Bool
     @FocusState private var remoteStartPortInFocus: Bool
     @FocusState private var remoteEndPortInFocus: Bool
     @FocusState private var localPortInFocus: Bool
@@ -72,7 +72,7 @@ struct ForwardedItemRow: View {
         self.onChange = onChange
         self.onCancel = onCancel
         self.onDelete = onDelete
-        self._ipAddress = State(initialValue: item?.ip ?? "")
+        self._address = State(initialValue: item?.address ?? "")
         self._remotePort = State(initialValue: item?.remotePort ?? .single(port: 0))
         self._localPort = State(initialValue: item?.localPort)
         self._allowLan = State(initialValue: item?.allowLan ?? false)
@@ -102,15 +102,27 @@ struct ForwardedItemRow: View {
                     }
                     .animation(.spring(), value: errors)
 
-                    TextField("IP Address", text: $ipAddress.animation()) {}
-                        .frame(width: 150)
+                    TextField("IP Address or Domain Name", text: $address.animation()) {}
                         .textFieldStyle(.roundedBorder)
-                        .foregroundColor(ipAddress != "" && !checkIpIsValid(ip: ipAddress) ? .red : .primary)
-                        .focused($ipAddrInFocus)
+                        .overlay(
+                            HStack {
+                                Spacer()
+                                if address != "" {
+                                    Text(checkIpIsValid(ip: address) ? "IP" : "Do")
+                                        .frame(width: 16, height: 16)
+                                        .font(.system(size: 8))
+                                        .foregroundStyle(.gray)
+                                        .border(.gray, width: 2)
+                                        .cornerRadius(4)
+                                        .padding(.trailing, 5)
+                                }
+                            }
+                        )
+                        .focused($addrInFocus)
                         .onAppear {
                             // auto focus when this show from `AddNew` button click
                             if item == nil {
-                                self.ipAddrInFocus = true
+                                self.addrInFocus = true
                             }
                         }
 
@@ -389,7 +401,7 @@ struct ForwardedItemRow: View {
     }
 
     func isValid () -> Bool {
-        if ipAddress == "" {
+        if address == "" {
             return false
         }
 
@@ -419,7 +431,7 @@ struct ForwardedItemRow: View {
             }
         }
 
-        return checkIpIsValid(ip: ipAddress)
+        return true
     }
 
     func hasChanged() -> Bool {
@@ -427,20 +439,20 @@ struct ForwardedItemRow: View {
             return true
         }
 
-        return item!.ip != ipAddress || item!.remotePort != remotePort || item!.localPort != localPort || item!.allowLan != allowLan
+        return item!.address != address || item!.remotePort != remotePort || item!.localPort != localPort || item!.allowLan != allowLan
     }
 
     func submit() {
         if item != nil {
             withAnimation {
                 if let onChange {
-                    onChange(ipAddress, remotePort, localPort, allowLan)
+                    onChange(address, remotePort, localPort, allowLan)
                 }
             }
         } else if let onNewItemAdded {
             do {
                 let newItem =
-                try ForwardedItem(ip: ipAddress, remotePort: remotePort, localPort: localPort, allowLan: allowLan)
+                try ForwardedItem(address: address, remotePort: remotePort, localPort: localPort, allowLan: allowLan)
                 onNewItemAdded(newItem)
             } catch {
                 showErrorDialog(error)
@@ -449,7 +461,7 @@ struct ForwardedItemRow: View {
     }
 
     func reset() {
-        ipAddress = item?.ip ?? ""
+        address = item?.address ?? ""
         remotePort = item?.remotePort ?? .single(port: 0)
         localPort = item?.localPort
         allowLan = item?.allowLan ?? false
@@ -459,11 +471,12 @@ struct ForwardedItemRow: View {
 #Preview {
     Group {
         ForwardedItemRow()
-        ForwardedItemRow(item: ForwardedItemInfo(ip: "192.168.1.1", remotePort: .single(port: 1234)))
-        ForwardedItemRow(item: ForwardedItemInfo(ip: "192.168.1.1", remotePort: .single(port: 1234), localPort: 4321))
-        ForwardedItemRow(item: ForwardedItemInfo(ip: "192.168.1.1", remotePort: .range(start: 1000, end: 2000)))
-        ForwardedItemRow(item: ForwardedItemInfo(ip: "192.168.1.1", remotePort: .range(start: 1000, end: 2000), localPort: 3000))
-        ForwardedItemRow(item: ForwardedItemInfo(ip: "192.168.1.1", remotePort: .single(port: 1234)), errors: [IpfError.addrInUse])
-        ForwardedItemRow(item: ForwardedItemInfo(ip: "192.168.1.1", remotePort: .single(port: 1234)), errors: [IpfError.addrInUse, IpfError.invalidLocalPortStart])
+        ForwardedItemRow(item: ForwardedItemInfo(address: "192.168.1.1", remotePort: .single(port: 1234)))
+        ForwardedItemRow(item: ForwardedItemInfo(address: "192.168.1.1", remotePort: .single(port: 1234), localPort: 4321))
+        ForwardedItemRow(item: ForwardedItemInfo(address: "192.168.1.1", remotePort: .range(start: 1000, end: 2000)))
+        ForwardedItemRow(item: ForwardedItemInfo(address: "192.168.1.1", remotePort: .range(start: 1000, end: 2000), localPort: 3000))
+        ForwardedItemRow(item: ForwardedItemInfo(address: "192.168.1.1", remotePort: .single(port: 1234)), errors: [IpfError.addrInUse])
+        ForwardedItemRow(item: ForwardedItemInfo(address: "192.168.1.1", remotePort: .single(port: 1234)), errors: [IpfError.addrInUse, IpfError.invalidLocalPortStart])
+        ForwardedItemRow(item: ForwardedItemInfo(address: "www.google.com", remotePort: .single(port: 80), localPort: 8080))
     }
 }

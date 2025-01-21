@@ -22,25 +22,25 @@ local function check_ip_is_valid(ip)
 	return ipf.ipf_check_ip_is_valid(ffi.new('char [?]', #ip + 1, ip))
 end
 
----Forward ip and port
----@param ip string
+---Forward address and port
+---@param address string
 ---@param remote_port number
 ---@param local_port number
 ---@param allow_lan boolean
 ---@return number forward_rule_id
-local function forward(ip, remote_port, local_port, allow_lan)
-	return ipf.ipf_forward(ffi.new('char [?]', #ip + 1, ip), remote_port, local_port, allow_lan)
+local function forward(address, remote_port, local_port, allow_lan)
+	return ipf.ipf_forward(ffi.new('char [?]', #address + 1, address), remote_port, local_port, allow_lan)
 end
 
----Forward ip and a range of ports
----@param ip string
+---Forward address and a range of ports
+---@param address string
 ---@param remote_port_start number
 ---@param remote_port_end number
 ---@param local_port_start number
 ---@param allow_lan boolean
 ---@return number forward_rule_id
-local function forward_range(ip, remote_port_start, remote_port_end, local_port_start, allow_lan)
-	return ipf.ipf_forward_range(ffi.new('char [?]', #ip + 1, ip), remote_port_start, remote_port_end, local_port_start, allow_lan)
+local function forward_range(address, remote_port_start, remote_port_end, local_port_start, allow_lan)
+	return ipf.ipf_forward_range(ffi.new('char [?]', #address + 1, address), remote_port_start, remote_port_end, local_port_start, allow_lan)
 end
 
 ---Cancel forward
@@ -57,17 +57,18 @@ local function error_message(error)
 	local message_table = {
 		[-1] = 'Unknown error',
 		[-10] = 'Invalid string',
-		[-11] = 'Invalid IP address',
-		[-12] = 'Too many rules',
-		[-13] = 'Invalid rule ID',
-		[-14] = 'Invalid local start port',
-		[-15] = 'Invalid remote end port',
-		[-16] = 'Error handler is already registered',
+		[-11] = 'Too many rules',
+		[-12] = 'Invalid rule ID',
+		[-13] = 'Invalid local start port',
+		[-14] = 'Invalid remote end port',
+		[-15] = 'Error handler is already registered',
 		[-51] = 'Permission denied',
 		[-52] = 'Address in use',
 		[-53] = 'Already exists',
 		[-54] = 'Out of memory',
 		[-55] = 'Too many open files',
+		[-56] = 'Address can not be resolved',
+
 	}
 
 	return message_table[error]
@@ -126,9 +127,10 @@ print 'Please input IP address you want to forward:'
 
 local ip = io.read()
 
-if check_ip_is_valid(ip) == false then
-	print("IP address " .. ip .. " is invalid.")
-	os.exit(1)
+if check_ip_is_valid(ip) then
+	print 'Detecting IP address, skip DNS lockup.'
+else
+	print 'Detecting domian name, performing DNS lockup...'
 end
 
 print 'Please input how long (in seconds, empty means forever) you want to forward:'
@@ -146,6 +148,11 @@ elseif forward_type == 'range' then
 	forward_rule_id = forward_a_range_of_ports(ip)
 else
 	print('Unknown forward type (`' .. forward_type .. '`), must be `single` or `range`.')
+	os.exit(1)
+end
+
+if forward_rule_id < 0 then
+	print('Error: ' .. error_message(forward_rule_id))
 	os.exit(1)
 end
 

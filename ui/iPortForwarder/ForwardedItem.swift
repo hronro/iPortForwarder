@@ -45,14 +45,14 @@ enum Port: Codable, Equatable {
 }
 
 protocol DisplayableForwardedItem {
-    var ip: String { get }
+    var address: String { get }
     var remotePort: Port { get }
     var localPort: UInt16? { get }
     var allowLan: Bool { get }
 }
 
 class ForwardedItem: DisplayableForwardedItem, Identifiable {
-    let ip: String
+    let address: String
     let remotePort: Port
     let localPort: UInt16?
     let allowLan: Bool
@@ -66,12 +66,12 @@ class ForwardedItem: DisplayableForwardedItem, Identifiable {
     }
 
     init(
-        ip: String,
+        address: String,
         remotePort: UInt16,
         localPort: UInt16? = nil,
         allowLan: Bool = false
     ) throws {
-        self.ip = ip
+        self.address = address
         self.remotePort = .single(port: remotePort)
         if let localPort {
             self.localPort = localPort
@@ -81,7 +81,7 @@ class ForwardedItem: DisplayableForwardedItem, Identifiable {
         self.allowLan = allowLan
 
         self.forwardRuleId = try forward(
-            ip: ip,
+            address: address,
             remotePort: remotePort,
             localPort: remotePort,
             allowLan: allowLan
@@ -89,19 +89,19 @@ class ForwardedItem: DisplayableForwardedItem, Identifiable {
     }
 
     init(
-        ip: String,
+        address: String,
         remotePorts: (UInt16, UInt16),
         localStartPort: UInt16?,
         allowLan: Bool = false
     ) throws {
-        self.ip = ip
+        self.address = address
         self.remotePort = .range(start: remotePorts.0, end: remotePorts.1)
         self.localPort = localStartPort
         self.allowLan = allowLan
 
         if let localStartPort {
             self.forwardRuleId = try forwardRange(
-                ip: ip,
+                address: address,
                 remotePortStart: remotePorts.0,
                 remotePortEnd: remotePorts.1,
                 localPortStart: localStartPort,
@@ -109,7 +109,7 @@ class ForwardedItem: DisplayableForwardedItem, Identifiable {
             )
         } else {
             self.forwardRuleId = try forwardRange(
-                ip: ip,
+                address: address,
                 remotePortStart: remotePorts.0,
                 remotePortEnd: remotePorts.1,
                 localPortStart: remotePorts.0,
@@ -119,12 +119,12 @@ class ForwardedItem: DisplayableForwardedItem, Identifiable {
     }
 
     init(
-        ip: String,
+        address: String,
         remotePort: Port,
         localPort: UInt16? = nil,
         allowLan: Bool = false
     ) throws {
-        self.ip = ip
+        self.address = address
         self.remotePort = remotePort
         self.localPort = localPort
         self.allowLan = allowLan
@@ -133,14 +133,14 @@ class ForwardedItem: DisplayableForwardedItem, Identifiable {
         case let .single(port):
             if let localPort {
                 self.forwardRuleId = try forward(
-                    ip: ip,
+                    address: address,
                     remotePort: port,
                     localPort: localPort,
                     allowLan: allowLan
                 )
             } else {
                 self.forwardRuleId = try forward(
-                    ip: ip,
+                    address: address,
                     remotePort: port,
                     localPort: port,
                     allowLan: allowLan
@@ -150,7 +150,7 @@ class ForwardedItem: DisplayableForwardedItem, Identifiable {
         case let .range(startPort, endPort):
             if let localPort {
                 self.forwardRuleId = try forwardRange(
-                    ip: ip,
+                    address: address,
                     remotePortStart: startPort,
                     remotePortEnd: endPort,
                     localPortStart: localPort,
@@ -158,7 +158,7 @@ class ForwardedItem: DisplayableForwardedItem, Identifiable {
                 )
             } else {
                 self.forwardRuleId = try forwardRange(
-                    ip: ip,
+                    address: address,
                     remotePortStart: startPort,
                     remotePortEnd: endPort,
                     localPortStart: startPort,
@@ -169,7 +169,7 @@ class ForwardedItem: DisplayableForwardedItem, Identifiable {
     }
 
     init(item: DisplayableForwardedItem) throws {
-        self.ip = item.ip
+        self.address = item.address
         self.remotePort = item.remotePort
         self.localPort = item.localPort
         self.allowLan = item.allowLan
@@ -178,14 +178,14 @@ class ForwardedItem: DisplayableForwardedItem, Identifiable {
         case let .single(port):
             if let localPort {
                 self.forwardRuleId = try forward(
-                    ip: ip,
+                    address: address,
                     remotePort: port,
                     localPort: localPort,
                     allowLan: allowLan
                 )
             } else {
                 self.forwardRuleId = try forward(
-                    ip: ip,
+                    address: address,
                     remotePort: port,
                     localPort: port,
                     allowLan: allowLan
@@ -195,7 +195,7 @@ class ForwardedItem: DisplayableForwardedItem, Identifiable {
         case let .range(startPort, endPort):
             if let localPort {
                 self.forwardRuleId = try forwardRange(
-                    ip: ip,
+                    address: address,
                     remotePortStart: startPort,
                     remotePortEnd: endPort,
                     localPortStart: localPort,
@@ -203,7 +203,7 @@ class ForwardedItem: DisplayableForwardedItem, Identifiable {
                 )
             } else {
                 self.forwardRuleId = try forwardRange(
-                    ip: ip,
+                    address: address,
                     remotePortStart: startPort,
                     remotePortEnd: endPort,
                     localPortStart: startPort,
@@ -226,7 +226,7 @@ class ForwardedItem: DisplayableForwardedItem, Identifiable {
 }
 
 struct ForwardedItemInfo: Codable, DisplayableForwardedItem {
-    let ip: String
+    let address: String
 
     let remotePort: Port
 
@@ -235,19 +235,19 @@ struct ForwardedItemInfo: Codable, DisplayableForwardedItem {
     let allowLan: Bool
 
     init(
-        ip: String,
+        address: String,
         remotePort: Port,
         localPort: UInt16? = nil,
         allowLan: Bool = false
     ) {
-        self.ip = ip
+        self.address = address
         self.remotePort = remotePort
         self.localPort = localPort
         self.allowLan = allowLan
     }
 
     init(item: DisplayableForwardedItem) {
-        self.ip = item.ip
+        self.address = item.address
         self.remotePort = item.remotePort
         self.localPort = item.localPort
         self.allowLan = item.allowLan
