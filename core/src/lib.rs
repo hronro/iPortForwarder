@@ -92,7 +92,6 @@ pub extern "C" fn ipf_forward(
     local_port: u16,
     allow_lan: bool,
 ) -> i8 {
-    println!("hi");
     if let Some(rule_id) = get_new_rule_id() {
         let addr_str = unsafe {
             match CStr::from_ptr(address_c_string).to_str() {
@@ -119,9 +118,7 @@ pub extern "C" fn ipf_forward(
             {
                 Ok(listener) => loop {
                     if let Ok((mut ingress, _)) = listener.accept().await {
-                        if let Ok(mut egress) =
-                            TcpStream::connect(socket_addr).await
-                        {
+                        if let Ok(mut egress) = TcpStream::connect(socket_addr).await {
                             RT.spawn(async move {
                                 _ = copy_bidirectional(&mut ingress, &mut egress).await;
                             });
