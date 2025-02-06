@@ -15,3 +15,12 @@ import Libipf
     alert.addButton(withTitle: "OK")
     alert.runModal()
 }
+
+@MainActor func showErrorDialog(_ errorText: String) {
+    let alert = NSAlert()
+    alert.messageText = "Error"
+    alert.informativeText = errorText
+    alert.alertStyle = NSAlert.Style.critical
+    alert.addButton(withTitle: "OK")
+    alert.runModal()
+}

@@ -30,6 +30,10 @@ struct iPortForwarderApp: App {
                 }
             }
         }
+
+        Task.detached {
+            await AppUpdater.checkForUpdates()
+        }
     }
 
     var body: some Scene {

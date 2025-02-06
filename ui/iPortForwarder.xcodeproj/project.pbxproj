@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		960312BC2A52E69000B79937 /* ShowErrorDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960312BB2A52E69000B79937 /* ShowErrorDialog.swift */; };
 		962F6D502B4FDAD100961137 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962F6D4F2B4FDAD100961137 /* SettingsView.swift */; };
+		9630309B2D3F85D40030771F /* AppUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9630309A2D3F85D00030771F /* AppUpdater.swift */; };
 		967344D92A1DE03400141A9E /* iPortForwarderApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967344D82A1DE03400141A9E /* iPortForwarderApp.swift */; };
 		967344DB2A1DE03400141A9E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967344DA2A1DE03400141A9E /* ContentView.swift */; };
 		967344DD2A1DE03800141A9E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 967344DC2A1DE03800141A9E /* Assets.xcassets */; };
@@ -23,6 +24,7 @@
 /* Begin PBXFileReference section */
 		960312BB2A52E69000B79937 /* ShowErrorDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowErrorDialog.swift; sourceTree = "<group>"; };
 		962F6D4F2B4FDAD100961137 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		9630309A2D3F85D00030771F /* AppUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUpdater.swift; sourceTree = "<group>"; };
 		967344D52A1DE03400141A9E /* iPortForwarder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iPortForwarder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		967344D82A1DE03400141A9E /* iPortForwarderApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iPortForwarderApp.swift; sourceTree = "<group>"; };
 		967344DA2A1DE03400141A9E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -70,6 +72,7 @@
 		967344D72A1DE03400141A9E /* iPortForwarder */ = {
 			isa = PBXGroup;
 			children = (
+				9630309A2D3F85D00030771F /* AppUpdater.swift */,
 				9673452D2A1F8FED00141A9E /* Info.plist */,
 				967344E92A1DEA1300141A9E /* Views */,
 				967344D82A1DE03400141A9E /* iPortForwarderApp.swift */,
@@ -200,6 +203,7 @@
 				96E31ACA2A68EF1A004DAF36 /* iPortForwarderCommands.swift in Sources */,
 				967344EB2A1DEAFD00141A9E /* ForwardedItemRow.swift in Sources */,
 				967344E82A1DE8DF00141A9E /* ForwardedItem.swift in Sources */,
+				9630309B2D3F85D40030771F /* AppUpdater.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
