@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [CHANGELOG.md](https://github.com/hronro/iPortForwarder/blob/master/CHANGELOG.md). All the notable changes will be documented in this file from this release.
 - Enable [App Sandbox](https://developer.apple.com/documentation/security/app-sandbox) for better security.
-- Allow using domain names (previously only IP addresses were allowed). Also an icon is added to indicate the type of the address.
+- Allow using domain names (previously only IP addresses were allowed). When input in a valid IPv4/Ipv6 address, an icon will be shown to indicate the type of the input.
 - Check for updates upon app startup.
 
 ### Changed

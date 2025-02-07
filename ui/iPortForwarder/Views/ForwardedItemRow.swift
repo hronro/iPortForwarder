@@ -107,8 +107,8 @@ struct ForwardedItemRow: View {
                         .overlay(
                             HStack {
                                 Spacer()
-                                if address != "" {
-                                    Text(checkIpIsValid(ip: address) ? "IP" : "Do")
+                                if address != "" && checkIpIsValid(ip: address) {
+                                    Text("IP")
                                         .frame(width: 16, height: 16)
                                         .font(.system(size: 8))
                                         .foregroundStyle(.gray)
