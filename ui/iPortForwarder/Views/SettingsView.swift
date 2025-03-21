@@ -29,14 +29,14 @@ class LaunchingAtLogin: ObservableObject {
                 return false
             }
         }
-        
+
         set {
             if #available(macOS 13, *) {
                 if newValue {
                     if SMAppService.mainApp.status == .enabled {
                         try? SMAppService.mainApp.unregister()
                     }
-                    
+
                     try? SMAppService.mainApp.register()
                 } else {
                     try? SMAppService.mainApp.unregister()
@@ -53,11 +53,11 @@ struct SettingsView: View {
             return NSApplication.shared.windows.first
         }
     }
-    
+
     @StateObject private var launchingAtLogin = LaunchingAtLogin()
 
     @AppStorage("loadConfigurationsOnStartup") private var loadConfigurationsOnStartup = false
-    @AppStorage("configurationsWillBeLoaded") private var configurationsWillBeLoaded: [URL] = []
+    @AppStorage("configurationsWillBeLoadedBookmarks") private var configurationsWillBeLoadedBookmarks: [Data] = []
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -85,9 +85,16 @@ struct SettingsView: View {
                                     openPanel.title = "Choose a configuration"
                                     openPanel.message = "Add a new configuration that loads at startup."
                                     openPanel.beginSheetModal(for: window) {
-                                        if $0 == .OK {
-                                            if let openUrl = openPanel.url {
-                                                configurationsWillBeLoaded.append(openUrl)
+                                        if $0 == .OK, let openUrl = openPanel.url {
+                                            do {
+                                                let bookmarkData = try openUrl.bookmarkData(
+                                                    options: [.withSecurityScope],
+                                                    includingResourceValuesForKeys: nil,
+                                                    relativeTo: nil
+                                                )
+                                                configurationsWillBeLoadedBookmarks.append(bookmarkData)
+                                            } catch {
+                                                showErrorDialog(error)
                                             }
                                         }
                                     }
@@ -99,15 +106,29 @@ struct SettingsView: View {
                             Spacer()
                         }
 
-                        if configurationsWillBeLoaded.count > 0 {
+                        if configurationsWillBeLoadedBookmarks.count > 0 {
                             VStack {
-                                ForEach(configurationsWillBeLoaded, id: \.absoluteString) {configFile in
+                                ForEach(configurationsWillBeLoadedBookmarks, id: \.self) { bookmarkData in
+                                    let displayName: String = {
+                                        var stale = false
+                                        if let url = try? URL(
+                                            resolvingBookmarkData: bookmarkData,
+                                            options: [.withSecurityScope],
+                                            relativeTo: nil,
+                                            bookmarkDataIsStale: &stale
+                                        ) {
+                                            return url.lastPathComponent
+                                        }
+                                        return "Unknown"
+                                    }()
+
                                     HStack {
-                                        Text(configFile.lastPathComponent)
+                                        Text(displayName)
                                         Spacer()
                                         Button {
-                                            let index = configurationsWillBeLoaded.firstIndex(where: { $0 == configFile })
-                                            configurationsWillBeLoaded.remove(at: index!)
+                                            if let index = configurationsWillBeLoadedBookmarks.firstIndex(of: bookmarkData) {
+                                                configurationsWillBeLoadedBookmarks.remove(at: index)
+                                            }
                                         } label: {
                                             Label("Delete Configuration", systemImage: "trash.fill")
                                                 .labelStyle(.iconOnly)
@@ -122,7 +143,7 @@ struct SettingsView: View {
                                 Color(NSColor.controlBackgroundColor)
                             }
                             .cornerRadius(8)
-                            .animation(.spring, value: configurationsWillBeLoaded)
+                            .animation(.spring, value: configurationsWillBeLoadedBookmarks)
                         }
                     }
                     .transition(.move(edge: .top).combined(with: .opacity))
