@@ -13,6 +13,13 @@ Go to the [GitHub Releases](https://github.com/hronro/iPortForwarder/releases) p
 ## FAQ
 
 <details>
+	<summary>When you first open the app, macOS displays an error message stating, "Apple could not verify "iPortForwarder" is free of malware that may harm your Mac or compromise your privacy."</summary>
+![Apple Fee Error](./docs/apple-fee-error.avif)
+The only reason that this error comes out is that I did not pay the Apple Developers fee (99USD/year) to Apple, which I don't plan to pay in the near future.
+If you are using macOS 12 to macOS 14, you can easily bypass this issue by right-clicking on "iPortForwarder.app" and selecting "Open" from the context menu. For macOS 15 and later, open the System Settings app, navigate to the "Privacy & Security" section, scroll to the bottom of the page, and click the "Open Anyway" button.
+</details>
+
+<details>
 	<summary>Is it possible to save the ports forwarding list?</summary>
 Yes. To save your current forwarding list, click on "File" in the menu bar and select "Save Current Forwarding List." Alternatively, you can press <kbd>⌘</kbd> + <kbd>S</kbd>. Choose a location to save the file.
 
