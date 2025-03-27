@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Upgrade Rust to v1.85 in CI.
+
 ### Fixed
 - Fix loading configuration file on startup.
 
