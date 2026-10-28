@@ -19,10 +19,11 @@ class GlobalState: ObservableObject {
 func initLibipfErrorHandler() {
     try! Libipf.registerErrorHandler { id, ipfError in
         DispatchQueue.main.async {
-            if var errors = globalState.errors[id] {
+            // Each port of a range reports its own error, so the same error can be reported many times.
+            var errors = globalState.errors[id] ?? []
+            if !errors.contains(ipfError) {
                 errors.append(ipfError)
-            } else {
-                globalState.errors[id] = [ipfError]
+                globalState.errors[id] = errors
             }
         }
     }

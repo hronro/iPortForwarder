@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Upgrade to Xcode 27.1 and Swift 6.4, and update the Xcode project to the recommended settings and project format of Xcode 27.
 - Migrate the `Libipf` Swift package to the Swift 6 language mode.
 
+### Fixed
+
+- Fix only the first error of a forwarding rule being shown.
+
 ## [1.0.1]
 
 ### Changed
