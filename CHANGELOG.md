@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Enable [Hardened Runtime](https://developer.apple.com/documentation/security/hardened-runtime) for better security.
 
+### Changed
+
+- Sign the app with an Apple Developer ID certificate and notarize it, so macOS no longer warns that it cannot verify iPortForwarder is free of malware.
+- Pin `create-dmg` to v8.1.0 in CI.
+
 ## [1.0.1]
 
 ### Changed

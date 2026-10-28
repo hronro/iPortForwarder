@@ -4,49 +4,12 @@ on:
   push:
     branches:
       - master
-
-env:
-  CARGO_TERM_COLOR: always
+  # Run manually to get a signed and notarized build, e.g. to test code signing before a release.
+  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: macos-15
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@1.85
-        with:
-          targets: aarch64-apple-darwin,x86_64-apple-darwin
-
-      - name: Build xcframework
-        run: sh build-xcframework.sh
-
-      - name: Setup Xcode
-        uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: '16.2'
-
-      - name: Xcode build
-        run: |
-          cd ui
-          xcodebuild archive \
-            -scheme iPortForwarder \
-            -archivePath build.xcarchive \
-            -configuration Release \
-            ONLY_ACTIVE_ARCH=NO
-
-      - name: Make dmg
-        run: |
-          brew install graphicsmagick imagemagick
-          npm install --global create-dmg
-          # Ignore the failure since there is no code signing identity,
-          # the DMG is still created and fine.
-          create-dmg 'ui/build.xcarchive/Products/Applications/iPortForwarder.app' || true
-          mv iPortForwarder*.dmg iPortForwarder.dmg
-
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: iPortForwarder
-          path: ${{ github.workspace }}/iPortForwarder.dmg
+    uses: ./.github/workflows/build.yml
+    with:
+      sign: ${{ github.event_name == 'workflow_dispatch' }}
+    secrets: inherit
