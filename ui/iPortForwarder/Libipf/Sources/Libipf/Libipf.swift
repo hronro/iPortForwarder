@@ -123,7 +123,7 @@ public func cancelForward(forwardRuleId: Int8) {
     Ipf.ipf_cancel_forward(forwardRuleId)
 }
 
-public func registerErrorHandler(_ handler: @escaping (Int8, IpfError) -> Void) throws {
+public func registerErrorHandler(_ handler: @escaping @Sendable (Int8, IpfError) -> Void) throws {
     if _externalErrorHandler == nil {
         _externalErrorHandler = handler
 
@@ -137,7 +137,8 @@ public func registerErrorHandler(_ handler: @escaping (Int8, IpfError) -> Void) 
     }
 }
 
-var _externalErrorHandler: ((Int8, IpfError) -> Void)? = nil
+// Only written once, before it is registered to ipf, after that it is only read from ipf's threads.
+nonisolated(unsafe) var _externalErrorHandler: (@Sendable (Int8, IpfError) -> Void)? = nil
 func cErrorHandler(ruleId: Int8, errorCode: Int8) {
     let ipfError = IpfError(rawValue: errorCode)!
     if let externalErrorHandler = _externalErrorHandler {

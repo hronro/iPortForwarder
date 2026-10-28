@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 110;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -42,11 +42,9 @@
 /* Begin PBXFrameworksBuildPhase section */
 		967344D22A1DE03400141A9E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				9673452F2A1F8FF900141A9E /* Libipf in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
@@ -133,8 +131,6 @@
 			);
 			buildRules = (
 			);
-			dependencies = (
-			);
 			name = iPortForwarder;
 			packageProductDependencies = (
 				9673452E2A1F8FF900141A9E /* Libipf */,
@@ -150,8 +146,8 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1430;
-				LastUpgradeCheck = 1520;
+				LastSwiftUpdateCheck = 2710;
+				LastUpgradeCheck = 2710;
 				TargetAttributes = {
 					967344D42A1DE03400141A9E = {
 						CreatedOnToolsVersion = 14.3;
@@ -159,7 +155,6 @@
 				};
 			};
 			buildConfigurationList = 967344D02A1DE03400141A9E /* Build configuration list for PBXProject "iPortForwarder" */;
-			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -169,6 +164,7 @@
 			mainGroup = 967344CC2A1DE03400141A9E;
 			packageReferences = (
 			);
+			preferredProjectObjectVersion = 110;
 			productRefGroup = 967344D62A1DE03400141A9E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -181,19 +177,16 @@
 /* Begin PBXResourcesBuildPhase section */
 		967344D32A1DE03400141A9E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				967344E02A1DE03800141A9E /* Preview Assets.xcassets in Resources */,
 				967344DD2A1DE03800141A9E /* Assets.xcassets in Resources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		967344D12A1DE03400141A9E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				960312BC2A52E69000B79937 /* ShowErrorDialog.swift in Sources */,
 				962F6D502B4FDAD100961137 /* SettingsView.swift in Sources */,
@@ -205,12 +198,11 @@
 				967344E82A1DE8DF00141A9E /* ForwardedItem.swift in Sources */,
 				9630309B2D3F85D40030771F /* AppUpdater.swift in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		967344E22A1DE03800141A9E /* Debug */ = {
+		967344E22A1DE03800141A9E /* Debug configuration for PBXProject "iPortForwarder" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -270,12 +262,13 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
-		967344E32A1DE03800141A9E /* Release */ = {
+		967344E32A1DE03800141A9E /* Release configuration for PBXProject "iPortForwarder" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -328,12 +321,13 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 			};
 			name = Release;
 		};
-		967344E52A1DE03800141A9E /* Debug */ = {
+		967344E52A1DE03800141A9E /* Debug configuration for PBXNativeTarget "iPortForwarder" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -346,7 +340,6 @@
 				DEVELOPMENT_ASSET_PATHS = "\"iPortForwarder/Preview Content\"";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iPortForwarder/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = iPortForwarder;
@@ -360,12 +353,13 @@
 				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hronro.ipf.iPortForwarder;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
-		967344E62A1DE03800141A9E /* Release */ = {
+		967344E62A1DE03800141A9E /* Release configuration for PBXNativeTarget "iPortForwarder" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -378,7 +372,6 @@
 				DEVELOPMENT_ASSET_PATHS = "\"iPortForwarder/Preview Content\"";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iPortForwarder/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = iPortForwarder;
@@ -392,6 +385,7 @@
 				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hronro.ipf.iPortForwarder;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 6.0;
 			};
@@ -403,19 +397,17 @@
 		967344D02A1DE03400141A9E /* Build configuration list for PBXProject "iPortForwarder" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				967344E22A1DE03800141A9E /* Debug */,
-				967344E32A1DE03800141A9E /* Release */,
+				967344E22A1DE03800141A9E /* Debug configuration for PBXProject "iPortForwarder" */,
+				967344E32A1DE03800141A9E /* Release configuration for PBXProject "iPortForwarder" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 		967344E42A1DE03800141A9E /* Build configuration list for PBXNativeTarget "iPortForwarder" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				967344E52A1DE03800141A9E /* Debug */,
-				967344E62A1DE03800141A9E /* Release */,
+				967344E52A1DE03800141A9E /* Debug configuration for PBXNativeTarget "iPortForwarder" */,
+				967344E62A1DE03800141A9E /* Release configuration for PBXNativeTarget "iPortForwarder" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */

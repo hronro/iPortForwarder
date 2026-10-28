@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Sign the app with an Apple Developer ID certificate and notarize it, so macOS no longer warns that it cannot verify iPortForwarder is free of malware.
 - Pin `create-dmg` to v8.1.0 in CI.
+- Upgrade to Xcode 27.1 and Swift 6.4, and update the Xcode project to the recommended settings and project format of Xcode 27.
+- Migrate the `Libipf` Swift package to the Swift 6 language mode.
 
 ## [1.0.1]
 
