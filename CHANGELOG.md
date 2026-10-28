@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Enable [Hardened Runtime](https://developer.apple.com/documentation/security/hardened-runtime) for better security.
+
 ## [1.0.1]
 
 ### Changed
